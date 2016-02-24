@@ -261,6 +261,7 @@ public class PopupController {
 
     /**
      * 为popupWindow的背景容器设置阴影半径
+     * 与{@link #setPopupBackgroundColor(int)}的透明度相关，若color为Transparent，则shadow无法显示
      * @param popupShadowRadius 阴影半径
      * @return this
      */
