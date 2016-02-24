@@ -10,7 +10,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 
 /**
  * PopupBackgroundView
@@ -18,7 +18,7 @@ import android.widget.RelativeLayout;
  * Created by vilyever on 2016/2/24.
  * Feature:
  */
-public class PopupBackgroundView extends RelativeLayout {
+public class PopupBackgroundView extends FrameLayout {
     final PopupBackgroundView self = this;
 
     /* Constructors */
@@ -267,9 +267,9 @@ public class PopupBackgroundView extends RelativeLayout {
     
     /* Private Methods */
     private void initial() {
-        self.directionArrowHeight = self.getContext().getResources().getDimensionPixelSize(R.dimen.PopupBackgroundArrowHeight);
-        self.popupShadowRadius =  self.getContext().getResources().getDimensionPixelSize(R.dimen.PopupBackgroundShadowRadius);
-        self.popupBackgroundColor = Color.TRANSPARENT;
+        self.directionArrowHeight = self.getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundArrowHeight);
+        self.popupShadowRadius =  self.getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundShadowRadius);
+        self.popupBackgroundColor = Color.WHITE;
 
         self.setWillNotDraw(false);
         self.setLayerType(View.LAYER_TYPE_SOFTWARE, null);

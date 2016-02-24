@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PopupController</string>
+    <string name="defaultAlertPositiveButtonTitle">OK</string>
 </resources>

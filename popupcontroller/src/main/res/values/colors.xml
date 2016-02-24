@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="simpleAlertBackground">#FFFFFF</color>
+    <color name="simpleAlertTitle">#000000</color>
+    <color name="simpleAlertMessage">#000000</color>
+    <color name="simpleAlertButtonTitle">#007AFF</color>
+    <color name="simpleAlertButtonTitleHighlight">#88007AFF</color>
+    <color name="simpleAlertSplitLine">#DBDBDF</color>
 </resources>

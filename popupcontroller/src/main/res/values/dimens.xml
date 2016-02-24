@@ -1,6 +1,16 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="common_title_size">14sp</dimen>
-    <dimen name="PopupBackgroundShadowRadius">3dp</dimen>
-    <dimen name="PopupBackgroundArrowHeight">16dp</dimen>
+    <dimen name="commonTitleSize">14sp</dimen>
+    <dimen name="popupBackgroundShadowRadius">3dp</dimen>
+    <dimen name="popupBackgroundArrowHeight">16dp</dimen>
+    <dimen name="simpleAlertWidth">300dp</dimen>
+    <dimen name="simpleAlertMargin">8dp</dimen>
+    <dimen name="simpleAlertRoundedRadius">8dp</dimen>
+    <dimen name="simpleAlertTitleHeight">44dp</dimen>
+    <dimen name="simpleAlertTitleSize">20sp</dimen>
+    <dimen name="simpleAlertMessageMaxHeight">100dp</dimen>
+    <dimen name="simpleAlertMessageSize">15sp</dimen>
+    <dimen name="simpleAlertButtonHeight">44dp</dimen>
+    <dimen name="simpleAlertButtonTitleSize">20sp</dimen>
+    <dimen name="simpleAlertSplitLine">1dp</dimen>
 </resources>

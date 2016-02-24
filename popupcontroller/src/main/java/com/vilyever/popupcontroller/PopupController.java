@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
@@ -280,7 +281,7 @@ public class PopupController {
     
     /* Properties */
     private Context context;
-    private PopupController setContext(Context context) {
+    protected PopupController setContext(Context context) {
         this.context = context;
         return this;
     }
@@ -289,7 +290,7 @@ public class PopupController {
     }
 
     private View view;
-    private PopupController setView(View view) {
+    protected PopupController setView(View view) {
         this.view = view;
         self.setContext(view.getContext());
         return this;
@@ -299,13 +300,31 @@ public class PopupController {
     }
 
     private PopupWindow popupWindow;
-    private PopupWindow getPopupWindow() {
+    protected PopupWindow getPopupWindow() {
         if (popupWindow == null) {
             self.popupWindow = new PopupWindow(self.getPopupBackgroundView());
             self.popupWindow.setFocusable(true);
             self.popupWindow.setClippingEnabled(false);
             self.popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
             self.popupWindow.setBackgroundDrawable(new ColorDrawable());
+
+            self.popupWindow.setTouchInterceptor(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (!self.isDismissOnTouchOutside()) {
+                        final int x = (int) event.getX();
+                        final int y = (int) event.getY();
+                        if ((event.getAction() == MotionEvent.ACTION_DOWN)
+                            && ((x < 0) || (x >= self.getPopupWindow().getContentView().getWidth()) || (y < 0) || (y >= self.getPopupWindow().getContentView().getHeight()))) {
+                            return true;
+                        }
+                        else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
 
             self.popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
@@ -322,7 +341,7 @@ public class PopupController {
     }
 
     private PopupBackgroundView popupBackgroundView;
-    private PopupBackgroundView getPopupBackgroundView() {
+    protected PopupBackgroundView getPopupBackgroundView() {
         if (popupBackgroundView == null) {
             popupBackgroundView = new PopupBackgroundView(self.getContext());
         }
@@ -333,7 +352,7 @@ public class PopupController {
         void onPopupWindowDismiss(PopupController controller);
     }
     private Delegate delegate;
-    private PopupController setDelegate(Delegate delegate) {
+    public PopupController setDelegate(Delegate delegate) {
         this.delegate = delegate;
         return this;
     }
@@ -348,7 +367,18 @@ public class PopupController {
         return delegate;
     }
 
-    
+    /**
+     * 是否点击window外部时消除popupWindow
+     */
+    private boolean dismissOnTouchOutside = true;
+    public PopupController setDismissOnTouchOutside(boolean dismissOnTouchOutside) {
+        this.dismissOnTouchOutside = dismissOnTouchOutside;
+        return this;
+    }
+    public boolean isDismissOnTouchOutside() {
+        return dismissOnTouchOutside;
+    }
+
     /* Overrides */
      
      

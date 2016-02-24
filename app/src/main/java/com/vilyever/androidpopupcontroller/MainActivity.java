@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.vilyever.popupcontroller.PopupController;
-import com.vilyever.popupcontroller.PopupDirection;
+import com.vilyever.popupcontroller.SimpleAlertController;
 
 public class MainActivity extends AppCompatActivity {
     final MainActivity self = this;
@@ -33,7 +33,15 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
 
 
-                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Up, true);
+//                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Up, true);
+//                self.popupController.popupInView(self.getWindow().getDecorView(), PopupDirection.Center);
+
+                SimpleAlertController.create(self)
+                                     .setTitle("Title标题")
+                                     .setMessage("Message 信息")
+                                     .setPositiveButtonTitle("确定")
+                                     .setNegativeButtonTitle("取消")
+                                     .show(view);
             }
         });
 

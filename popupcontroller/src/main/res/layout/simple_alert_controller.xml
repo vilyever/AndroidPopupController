@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <LinearLayout
+        android:layout_width="@dimen/simpleAlertWidth"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/titleLabel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/simpleAlertTitleHeight"
+            android:gravity="center"
+            android:lines="1"
+            android:textStyle="bold"
+            android:textSize="@dimen/simpleAlertTitleSize"
+            android:textColor="@color/simpleAlertTitle"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/messageLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="@dimen/simpleAlertMessageMaxHeight"
+            android:layout_margin="@dimen/simpleAlertMargin"
+            android:gravity="center"
+            android:textSize="@dimen/simpleAlertMessageSize"
+            android:textColor="@color/simpleAlertMessage"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/simpleAlertSplitLine"
+            android:background="@color/simpleAlertSplitLine"
+            />
+
+        <LinearLayout
+            android:id="@+id/buttonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/simpleAlertButtonHeight"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/negativeButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:lines="1"
+                android:textSize="@dimen/simpleAlertButtonTitleSize"
+                android:textColor="@drawable/simple_alert_button_title_color"
+                android:background="@null"
+                android:visibility="gone"
+                />
+
+            <View
+                android:id="@+id/splitButtonView"
+                android:layout_width="@dimen/simpleAlertSplitLine"
+                android:layout_height="match_parent"
+                android:background="@color/simpleAlertSplitLine"
+                android:visibility="gone"
+                />
+
+            <Button
+                android:id="@+id/positiveButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:lines="1"
+                android:textStyle="bold"
+                android:textSize="@dimen/simpleAlertButtonTitleSize"
+                android:textColor="@drawable/simple_alert_button_title_color"
+                android:background="@null"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
