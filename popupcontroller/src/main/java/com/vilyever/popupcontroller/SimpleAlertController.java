@@ -44,15 +44,12 @@ public class SimpleAlertController extends PopupController {
     
     
     /* Public Methods */
-    public static SimpleAlertController create(Context context) {
-        return new SimpleAlertController(context);
-    }
 
     /**
      * 显示alert窗口
      * @param anchorView 锚view，此view仅用于查找window上的decorView，故此view需在decorView的子view中
      */
-    public void show(View anchorView) {
+    public <T extends SimpleAlertController> T show(View anchorView) {
         if (self.getNegativeButtonTitle() == null && self.getPositiveButtonTitle() == null) {
             self.setPositiveButtonTitle(self.getContext().getString(R.string.defaultAlertPositiveButtonTitle));
         }
@@ -73,6 +70,8 @@ public class SimpleAlertController extends PopupController {
             view = (View) view.getParent();
         }
         self.popupInView(view, PopupDirection.Center);
+
+        return (T) this;
     }
 
     
@@ -112,11 +111,11 @@ public class SimpleAlertController extends PopupController {
      * {@link #titleLabel}
      */
     private String title;
-    public SimpleAlertController setTitle(String title) {
+    public <T extends SimpleAlertController> T setTitle(String title) {
         this.title = title;
         self.getTitleLabel().setText(title);
         self.getTitleLabel().setVisibility(title != null ? View.VISIBLE : View.GONE);
-        return this; 
+        return (T) this;
     }
     public String getTitle() {
         return title;
@@ -127,11 +126,11 @@ public class SimpleAlertController extends PopupController {
      * {@link #messageLabel}
      */
     private String message;
-    public SimpleAlertController setMessage(String message) {
+    public <T extends SimpleAlertController> T setMessage(String message) {
         this.message = message;
         self.getMessageLabel().setText(message);
         self.getMessageLabel().setVisibility(message != null ? View.VISIBLE : View.GONE);
-        return this; 
+        return (T) this;
     }
     public String getMessage() {
         return message;
@@ -142,11 +141,11 @@ public class SimpleAlertController extends PopupController {
      * {@link #negativeButton}
      */
     private String negativeButtonTitle;
-    public SimpleAlertController setNegativeButtonTitle(String negativeButtonTitle) {
+    public <T extends SimpleAlertController> T setNegativeButtonTitle(String negativeButtonTitle) {
         this.negativeButtonTitle = negativeButtonTitle;
         self.getNegativeButton().setText(negativeButtonTitle);
         self.getNegativeButton().setVisibility(negativeButtonTitle != null ? View.VISIBLE : View.GONE);
-        return this; 
+        return (T) this;
     }
     public String getNegativeButtonTitle() {
         return negativeButtonTitle;
@@ -157,11 +156,11 @@ public class SimpleAlertController extends PopupController {
      * {@link #positiveButton}
      */
     private String positiveButtonTitle;
-    public SimpleAlertController setPositiveButtonTitle(String positiveButtonTitle) {
+    public <T extends SimpleAlertController> T setPositiveButtonTitle(String positiveButtonTitle) {
         this.positiveButtonTitle = positiveButtonTitle;
         self.getPositiveButton().setText(positiveButtonTitle);
         self.getPositiveButton().setVisibility(positiveButtonTitle != null ? View.VISIBLE : View.GONE);
-        return this;
+        return (T) this;
     }
     public String getPositiveButtonTitle() {
         return positiveButtonTitle;
@@ -174,9 +173,9 @@ public class SimpleAlertController extends PopupController {
         void onButtonClick(SimpleAlertController controller, Button button);
     }
     private ActionDelegate negativeDelegate;
-    public SimpleAlertController setNegativeDelegate(ActionDelegate negativeDelegate) {
+    public <T extends SimpleAlertController> T setNegativeDelegate(ActionDelegate negativeDelegate) {
         this.negativeDelegate = negativeDelegate;
-        return this;
+        return (T) this;
     }
     public ActionDelegate getNegativeDelegate() {
         if (negativeDelegate == null) {
@@ -190,9 +189,9 @@ public class SimpleAlertController extends PopupController {
     }
 
     private ActionDelegate positiveDelegate;
-    public SimpleAlertController setPositiveDelegate(ActionDelegate positiveDelegate) {
+    public <T extends SimpleAlertController> T setPositiveDelegate(ActionDelegate positiveDelegate) {
         this.positiveDelegate = positiveDelegate;
-        return this;
+        return (T) this;
     }
     public ActionDelegate getPositiveDelegate() {
         if (positiveDelegate == null) {
