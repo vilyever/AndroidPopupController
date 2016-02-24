@@ -57,6 +57,10 @@ public class SimpleAlertController extends PopupController {
             self.setPositiveButtonTitle(self.getContext().getString(R.string.defaultAlertPositiveButtonTitle));
         }
 
+        if (self.getTitle() == null && self.getMessage() == null) {
+            self.setTitle("");
+        }
+
         if (self.getNegativeButtonTitle() == null || self.getPositiveButtonTitle() == null) {
             self.getSplitButtonView().setVisibility(View.GONE);
         }
@@ -111,7 +115,7 @@ public class SimpleAlertController extends PopupController {
     public SimpleAlertController setTitle(String title) {
         this.title = title;
         self.getTitleLabel().setText(title);
-        self.getTitleLabel().setVisibility(View.VISIBLE);
+        self.getTitleLabel().setVisibility(title != null ? View.VISIBLE : View.GONE);
         return this; 
     }
     public String getTitle() {
@@ -126,7 +130,7 @@ public class SimpleAlertController extends PopupController {
     public SimpleAlertController setMessage(String message) {
         this.message = message;
         self.getMessageLabel().setText(message);
-        self.getMessageLabel().setVisibility(View.VISIBLE);
+        self.getMessageLabel().setVisibility(message != null ? View.VISIBLE : View.GONE);
         return this; 
     }
     public String getMessage() {
@@ -141,7 +145,7 @@ public class SimpleAlertController extends PopupController {
     public SimpleAlertController setNegativeButtonTitle(String negativeButtonTitle) {
         this.negativeButtonTitle = negativeButtonTitle;
         self.getNegativeButton().setText(negativeButtonTitle);
-        self.getNegativeButton().setVisibility(View.VISIBLE);
+        self.getNegativeButton().setVisibility(negativeButtonTitle != null ? View.VISIBLE : View.GONE);
         return this; 
     }
     public String getNegativeButtonTitle() {
@@ -156,7 +160,7 @@ public class SimpleAlertController extends PopupController {
     public SimpleAlertController setPositiveButtonTitle(String positiveButtonTitle) {
         this.positiveButtonTitle = positiveButtonTitle;
         self.getPositiveButton().setText(positiveButtonTitle);
-        self.getPositiveButton().setVisibility(View.VISIBLE);
+        self.getPositiveButton().setVisibility(positiveButtonTitle != null ? View.VISIBLE : View.GONE);
         return this;
     }
     public String getPositiveButtonTitle() {
@@ -186,7 +190,7 @@ public class SimpleAlertController extends PopupController {
     }
 
     private ActionDelegate positiveDelegate;
-    private SimpleAlertController setPositiveDelegate(ActionDelegate positiveDelegate) {
+    public SimpleAlertController setPositiveDelegate(ActionDelegate positiveDelegate) {
         this.positiveDelegate = positiveDelegate;
         return this;
     }

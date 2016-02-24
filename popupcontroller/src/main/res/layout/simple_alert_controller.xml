@@ -34,6 +34,7 @@
             android:gravity="center"
             android:textSize="@dimen/simpleAlertMessageSize"
             android:textColor="@color/simpleAlertMessage"
+            android:visibility="gone"
             />
 
         <View
