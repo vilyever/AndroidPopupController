@@ -104,7 +104,7 @@ public class SimpleAlertController extends PopupController {
      * 右侧确定button
      */
     private Button positiveButton;
-    public Button getPositiveButton() { if (positiveButton == null) { positiveButton = (Button) self.getView().findViewById(R.id.positiveButton); } return positiveButton; }
+    public Button getPositiveButton() { if (positiveButton == null) { positiveButton = (Button) self.getView().findViewById(R.id.positive_button); } return positiveButton; }
 
     /**
      * 标题
