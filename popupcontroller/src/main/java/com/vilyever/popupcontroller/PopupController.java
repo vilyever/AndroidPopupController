@@ -22,6 +22,10 @@ public class PopupController {
 
 
     /* Constructors */
+    public PopupController(Context context) {
+        self.setContext(context);
+    }
+
     public PopupController(Context context, int layout) {
         this(View.inflate(context, layout, null));
     }
