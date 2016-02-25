@@ -138,7 +138,6 @@ public class SimpleAlertController extends PopupController {
             ((LinearLayout.LayoutParams) messageLabel.getLayoutParams()).setMargins(margin, margin, margin, margin);
             messageLabel.setMaxHeight(VDResource.getDimensionPixelSize(R.dimen.simpleAlertMessageMaxHeight));
             messageLabel.setGravity(Gravity.CENTER);
-            messageLabel.setLines(1);
             messageLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, VDResource.getDimensionPixelSize(R.dimen.simpleAlertMessageSize));
             messageLabel.setTextColor(VDResource.getColor(R.color.simpleAlertMessage));
             messageLabel.setVisibility(View.GONE);
