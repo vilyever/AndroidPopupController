@@ -14,7 +14,7 @@
         >
 
         <TextView
-            android:id="@+id/titleLabel"
+            android:id="@+id/titleLabelTextView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/simpleAlertTitleHeight"
             android:gravity="center"

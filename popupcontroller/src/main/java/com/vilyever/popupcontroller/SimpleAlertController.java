@@ -80,7 +80,7 @@ public class SimpleAlertController extends PopupController {
      * 标题栏
      */
     private TextView titleLabel;
-    public TextView getTitleLabel() { if (titleLabel == null) { titleLabel = (TextView) self.getView().findViewById(R.id.titleLabel); } return titleLabel; }
+    public TextView getTitleLabel() { if (titleLabel == null) { titleLabel = (TextView) self.getView().findViewById(R.id.titleLabelTextView); } return titleLabel; }
 
     /**
      * 信息栏
