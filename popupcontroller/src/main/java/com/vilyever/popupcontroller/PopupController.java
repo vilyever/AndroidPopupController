@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
 /**
@@ -20,14 +21,17 @@ import android.widget.PopupWindow;
 public class PopupController {
     final PopupController self = this;
 
-
     /* Constructors */
     public PopupController(Context context) {
         self.setContext(context);
     }
 
     public PopupController(Context context, int layout) {
-        this(View.inflate(context, layout, null));
+        // For generate LayoutParams
+        FrameLayout wrapperFrameLayout = new FrameLayout(context);
+        wrapperFrameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        self.setView(View.inflate(context, layout, wrapperFrameLayout));
     }
 
     public PopupController(View view) {
@@ -77,7 +81,7 @@ public class PopupController {
      * @param offsetY Y轴偏移量
      */
     public <T extends PopupController> T popupFromView(@NonNull View anchorView, @NonNull PopupDirection popupDirection, boolean withArrow, int offsetX, int offsetY) {
-        if (self.getPopupWindow().isShowing()) {
+        if (!self.getPopupWindow().isShowing()) {
 
             self.attachToParent(self.getPopupBackgroundView());
 
@@ -298,6 +302,12 @@ public class PopupController {
         return context;
     }
 
+    /**
+     * controller的根视图
+     * 注意：如果controller是由{@link #PopupController(Context, int)}生成的，此时的根视图view存在一个包裹它的FrameLayout
+     * 这是由于如果没有一个view用于初始化layout，layout的根视图将无法生成LayoutParams
+     * 如果要对LayoutParams，请注意其类型
+     */
     private View view;
     protected <T extends PopupController> T setView(View view) {
         this.view = view;

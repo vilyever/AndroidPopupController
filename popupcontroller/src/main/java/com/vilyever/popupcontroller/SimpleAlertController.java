@@ -1,6 +1,5 @@
 package com.vilyever.popupcontroller;
 
-import android.content.Context;
 import android.graphics.Typeface;
 import android.text.method.ScrollingMovementMethod;
 import android.util.TypedValue;
@@ -12,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.vilyever.contextholder.VDContextHolder;
 import com.vilyever.resource.VDResource;
 
 /**
@@ -25,18 +25,15 @@ public class SimpleAlertController extends PopupController {
     
     
     /* Constructors */
-    public SimpleAlertController(View view) {
-        super(view);
+    public SimpleAlertController() {
+        super(VDContextHolder.getContext());
 
+        self.setView(self.getRootFrameLayout());
         self.initial();
     }
     
     
     /* Public Methods */
-    public static SimpleAlertController create(Context context) {
-        return new SimpleAlertController(genereteRootView(context));
-    }
-
     /**
      * 显示alert窗口
      * @param anchorView 锚view，此view仅用于查找window上的decorView，故此view需在decorView的子view中
@@ -57,10 +54,44 @@ public class SimpleAlertController extends PopupController {
             self.getSplitButtonView().setVisibility(View.VISIBLE);
         }
 
+
+
         View view = anchorView;
         while (view.getParent() instanceof View) {
             view = (View) view.getParent();
         }
+
+//        WindowManager windowManager = (WindowManager) self.getContext().getSystemService(Context.WINDOW_SERVICE);
+//        FrameLayout frameLayout = new FrameLayout(self.getContext());
+//        frameLayout.setVisibility(View.GONE);
+//        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+//        layoutParams.packageName = self.getContext().getPackageName();
+//        layoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
+//        windowManager.addView(frameLayout, layoutParams);
+//        System.out.println("fr " + frameLayout.getParent());
+//
+//        ActivityManager am = (ActivityManager) self.getContext().getSystemService(Context.ACTIVITY_SERVICE);
+//        System.out.println("am tasg : + " + am.getRecentTasks(100, ActivityManager.RECENT_WITH_EXCLUDED).get(0).baseIntent);
+//        System.out.println("view " + view);
+//        System.out.println("view parent " + view.getParent());
+//        try {
+//            View decorView = (View) Class.forName("android.view.ViewRootImpl")
+//                                           .getMethod("getView").invoke(frameLayout.getParent(), (Object[]) null);
+//            System.out.println("decor view " + decorView);
+//        }
+//        catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+//        catch (InvocationTargetException e) {
+//            e.printStackTrace();
+//        }
+//        catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        }
+//        catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
         self.popupInView(view, PopupDirection.Center);
 
         return (T) this;
@@ -76,9 +107,10 @@ public class SimpleAlertController extends PopupController {
         this.rootFrameLayout = rootFrameLayout;
         return this;
     }
-    private FrameLayout getRootFrameLayout(Context context) {
+    private FrameLayout getRootFrameLayout() {
         if (rootFrameLayout == null) {
-
+            rootFrameLayout = new FrameLayout(self.getContext());
+            rootFrameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
         return rootFrameLayout;
     }
@@ -346,14 +378,7 @@ public class SimpleAlertController extends PopupController {
      
      
     /* Private Methods */
-    private static View genereteRootView(Context context) {
-        return new FrameLayout(context);
-    }
-
     private void initial() {
-        FrameLayout rootFrameLayout = (FrameLayout) self.getView();
-        rootFrameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
         self.getAlertLinearLayout().addView(self.getTitleLabel());
         self.getAlertLinearLayout().addView(self.getMessageLabel());
         self.getAlertLinearLayout().addView(self.getSplitVerticalView());
@@ -362,7 +387,7 @@ public class SimpleAlertController extends PopupController {
         self.getButtonLayout().addView(self.getPositiveButton());
         self.getAlertLinearLayout().addView(self.getButtonLayout());
 
-        rootFrameLayout.addView(self.getAlertLinearLayout());
+        self.getRootFrameLayout().addView(self.getAlertLinearLayout());
 
         self.getMessageLabel().setMovementMethod(new ScrollingMovementMethod());
         self.getNegativeButton().setOnClickListener(new View.OnClickListener() {
