@@ -31,8 +31,9 @@ public class PopupController {
         // For generate LayoutParams
         FrameLayout wrapperFrameLayout = new FrameLayout(context);
         wrapperFrameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        View.inflate(context, layout, wrapperFrameLayout);
 
-        self.setView(View.inflate(context, layout, wrapperFrameLayout));
+        self.setView(wrapperFrameLayout.getChildAt(0));
     }
 
     public PopupController(View view) {
