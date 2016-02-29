@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                                      .setMessage("Message 信息")
                                      .setPositiveButtonTitle("确定")
                                      .setNegativeButtonTitle("取消")
-                                     .show(view);
+                                     .show();
             }
         });
 

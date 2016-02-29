@@ -3,6 +3,7 @@ package com.vilyever.popupcontroller;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -348,11 +349,7 @@ public class PopupController {
             self.popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
                 public void onDismiss() {
-                    self.getPopupBackgroundView().removeAllViews();
-
-                    if (self.getDelegate() != null) {
-                        self.getDelegate().onPopupWindowDismiss(self);
-                    }
+                    self.onPopupDismiss();
                 }
             });
         }
@@ -367,23 +364,23 @@ public class PopupController {
         return popupBackgroundView;
     }
 
-    public interface Delegate {
+    public interface PopupDelegate {
         void onPopupWindowDismiss(PopupController controller);
     }
-    private Delegate delegate;
-    public <T extends PopupController> T setDelegate(Delegate delegate) {
-        this.delegate = delegate;
+    private PopupDelegate popupDelegate;
+    public <T extends PopupController> T setPopupDelegate(PopupDelegate popupDelegate) {
+        this.popupDelegate = popupDelegate;
         return (T) this;
     }
-    public Delegate getDelegate() {
-        if (delegate == null) {
-            delegate = new Delegate() {
+    public PopupDelegate getPopupDelegate() {
+        if (popupDelegate == null) {
+            popupDelegate = new PopupDelegate() {
                 @Override
                 public void onPopupWindowDismiss(PopupController controller) {
                 }
             };
         }
-        return delegate;
+        return popupDelegate;
     }
 
     /**
@@ -402,7 +399,13 @@ public class PopupController {
      
      
     /* Delegates */
-     
+
+    /* Protected Methods */
+    @CallSuper
+    protected void onPopupDismiss() {
+        self.getPopupBackgroundView().removeAllViews();
+        self.getPopupDelegate().onPopupWindowDismiss(self);
+    }
      
     /* Private Methods */
     
