@@ -21,6 +21,8 @@ import com.vilyever.resource.VDResource;
  * AndroidPopupController <com.vilyever.popupcontroller>
  * Created by vilyever on 2016/2/24.
  * Feature:
+ * 提示弹窗
+ * 注意：此弹窗不和Activity关联，即弹窗期间切换activity仍然存在
  */
 public class SimpleAlertController extends PopupController {
     final SimpleAlertController self = this;
@@ -68,6 +70,9 @@ public class SimpleAlertController extends PopupController {
 
     
     /* Properties */
+    /**
+     * 附加于window的根视图，用于展示alert
+     */
     private FrameLayout decorFrameLayout;
     protected FrameLayout getDecorFrameLayout() {
         if (decorFrameLayout == null) {
@@ -393,6 +398,9 @@ public class SimpleAlertController extends PopupController {
         self.setEdgeRoundedRadius(VDResource.getDimensionPixelSize(R.dimen.simpleAlertRoundedRadius));
     }
 
+    /**
+     * 添加layout到window，用于之后的弹窗
+     */
     private void attachDecorFrameLayoutToWindow() {
         if (self.getDecorFrameLayout().getParent() == null) {
             WindowManager windowManager = (WindowManager) self.getContext().getSystemService(Context.WINDOW_SERVICE);
@@ -404,6 +412,9 @@ public class SimpleAlertController extends PopupController {
         }
     }
 
+    /**
+     * 解离之前添加到window的layout，在alert消失时调用
+     */
     private void dettachDecorFrameLayoutToWindow() {
         if (self.getDecorFrameLayout().getParent() != null) {
             WindowManager windowManager = (WindowManager) self.getContext().getSystemService(Context.WINDOW_SERVICE);

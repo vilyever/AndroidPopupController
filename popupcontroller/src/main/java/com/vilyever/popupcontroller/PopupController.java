@@ -9,7 +9,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
 /**
@@ -17,52 +16,26 @@ import android.widget.PopupWindow;
  * AndroidPopupController <com.vilyever.popupcontroller>
  * Created by vilyever on 2016/2/24.
  * Feature:
+ * popup视图控制器
  * popupWindow封装
  */
-public class PopupController {
+public class PopupController extends ViewController {
     final PopupController self = this;
 
     /* Constructors */
     public PopupController(Context context) {
-        self.setContext(context);
+        super(context);
     }
 
     public PopupController(Context context, int layout) {
-        // For generate LayoutParams
-        FrameLayout wrapperFrameLayout = new FrameLayout(context);
-        wrapperFrameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        View.inflate(context, layout, wrapperFrameLayout);
-
-        self.setView(wrapperFrameLayout.getChildAt(0));
+        super(context, layout);
     }
 
     public PopupController(View view) {
-        self.setView(view);
+        super(view);
     }
     
     /* Public Methods */
-    /**
-     * 添加当前controller的view到一个父view上
-     * @param parent 父view
-     */
-    public <T extends PopupController> T attachToParent(ViewGroup parent) {
-        if (self.getView().getParent() != parent) {
-            self.detachFromParent();
-            parent.addView(self.getView());
-        }
-
-        return (T) this;
-    }
-    
-    /**
-     * 将当前controller的view从父view移除
-     */
-    public <T extends PopupController> T detachFromParent() {
-        if (self.getView().getParent() != null) {
-            ((ViewGroup) self.getView().getParent()).removeView(self.getView());
-        }
-        return (T) this;
-    }
 
     /** @see #popupFromView(View, PopupDirection, boolean, int, int)  */
     public <T extends PopupController> T popupFromView(@NonNull View anchorView, @NonNull PopupDirection popupDirection) {
@@ -295,31 +268,6 @@ public class PopupController {
     
     
     /* Properties */
-    private Context context;
-    protected <T extends PopupController> T setContext(Context context) {
-        this.context = context;
-        return (T) this;
-    }
-    public Context getContext() {
-        return context;
-    }
-
-    /**
-     * controller的根视图
-     * 注意：如果controller是由{@link #PopupController(Context, int)}生成的，此时的根视图view存在一个包裹它的FrameLayout
-     * 这是由于如果没有一个view用于初始化layout，layout的根视图将无法生成LayoutParams
-     * 如果要对LayoutParams，请注意其类型
-     */
-    private View view;
-    protected <T extends PopupController> T setView(View view) {
-        this.view = view;
-        self.setContext(view.getContext());
-        return (T) this;
-    }
-    public View getView() {
-        return view;
-    }
-
     private PopupWindow popupWindow;
     protected PopupWindow getPopupWindow() {
         if (popupWindow == null) {
