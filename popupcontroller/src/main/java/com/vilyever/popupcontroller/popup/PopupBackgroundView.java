@@ -1,4 +1,4 @@
-package com.vilyever.popupcontroller;
+package com.vilyever.popupcontroller.popup;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,14 +9,19 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import com.vilyever.popupcontroller.R;
 
 /**
  * PopupBackgroundView
  * AndroidPopupController <com.vilyever.popupcontroller>
  * Created by vilyever on 2016/2/24.
  * Feature:
+ * {@link PopupController}弹出时的背景视图
+ * 实现箭头 边框圆角 阴影等效果
  */
 public class PopupBackgroundView extends FrameLayout {
     final PopupBackgroundView self = this;
@@ -261,7 +266,13 @@ public class PopupBackgroundView extends FrameLayout {
     @Override
     public void setBackground(Drawable background) {
     }
-     
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        System.out.println("onKeyDown " + keyCode);
+        return super.onKeyDown(keyCode, event);
+    }
+
     /* Delegates */
     
     

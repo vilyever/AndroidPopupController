@@ -1,4 +1,4 @@
-package com.vilyever.popupcontroller;
+package com.vilyever.popupcontroller.alert;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -14,6 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.vilyever.contextholder.VDContextHolder;
+import com.vilyever.popupcontroller.R;
+import com.vilyever.popupcontroller.popup.PopupController;
+import com.vilyever.popupcontroller.popup.PopupDirection;
 import com.vilyever.resource.VDResource;
 
 /**
@@ -58,7 +61,7 @@ public class SimpleAlertController extends PopupController {
         }
 
         self.attachDecorFrameLayoutToWindow();
-        self.getView().post(new Runnable() {
+        self.getDecorFrameLayout().post(new Runnable() {
             @Override
             public void run() {
                 self.popupInView(getDecorFrameLayout(), PopupDirection.Center);
@@ -318,39 +321,39 @@ public class SimpleAlertController extends PopupController {
     /**
      * button点击回调
      */
-    public interface ActionDelegate {
+    public interface OnClickListener {
         void onButtonClick(SimpleAlertController controller, Button button);
     }
-    private ActionDelegate negativeDelegate;
-    public <T extends SimpleAlertController> T setNegativeDelegate(ActionDelegate negativeDelegate) {
-        this.negativeDelegate = negativeDelegate;
+    private OnClickListener onNegativeButtonClickListener;
+    public <T extends SimpleAlertController> T setOnNegativeButtonClickListener(OnClickListener onNegativeButtonClickListener) {
+        this.onNegativeButtonClickListener = onNegativeButtonClickListener;
         return (T) this;
     }
-    public ActionDelegate getNegativeDelegate() {
-        if (negativeDelegate == null) {
-            negativeDelegate = new ActionDelegate() {
+    public OnClickListener getOnNegativeButtonClickListener() {
+        if (onNegativeButtonClickListener == null) {
+            onNegativeButtonClickListener = new OnClickListener() {
                 @Override
                 public void onButtonClick(SimpleAlertController controller, Button button) {
                 }
             };
         }
-        return negativeDelegate;
+        return onNegativeButtonClickListener;
     }
 
-    private ActionDelegate positiveDelegate;
-    public <T extends SimpleAlertController> T setPositiveDelegate(ActionDelegate positiveDelegate) {
-        this.positiveDelegate = positiveDelegate;
+    private OnClickListener onPositiveButtonClickListener;
+    public <T extends SimpleAlertController> T setOnPositiveButtonClickListener(OnClickListener onPositiveButtonClickListener) {
+        this.onPositiveButtonClickListener = onPositiveButtonClickListener;
         return (T) this;
     }
-    public ActionDelegate getPositiveDelegate() {
-        if (positiveDelegate == null) {
-            positiveDelegate = new ActionDelegate() {
+    public OnClickListener getOnPositiveButtonClickListener() {
+        if (onPositiveButtonClickListener == null) {
+            onPositiveButtonClickListener = new OnClickListener() {
                 @Override
                 public void onButtonClick(SimpleAlertController controller, Button button) {
                 }
             };
         }
-        return positiveDelegate;
+        return onPositiveButtonClickListener;
     }
 
 
@@ -382,14 +385,14 @@ public class SimpleAlertController extends PopupController {
             @Override
             public void onClick(View v) {
                 self.dismissPopup();
-                self.getNegativeDelegate().onButtonClick(self, (Button) v);
+                self.getOnNegativeButtonClickListener().onButtonClick(self, (Button) v);
             }
         });
         self.getPositiveButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 self.dismissPopup();
-                self.getPositiveDelegate().onButtonClick(self, (Button) v);
+                self.getOnPositiveButtonClickListener().onButtonClick(self, (Button) v);
             }
         });
 
@@ -421,5 +424,5 @@ public class SimpleAlertController extends PopupController {
             windowManager.removeView(self.getDecorFrameLayout());
         }
     }
-    
+
 }

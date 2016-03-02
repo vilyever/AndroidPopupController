@@ -1,4 +1,4 @@
-package com.vilyever.popupcontroller;
+package com.vilyever.popupcontroller.popup;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -10,6 +10,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
+
+import com.vilyever.popupcontroller.ViewController;
 
 /**
  * PopupController
@@ -313,23 +315,23 @@ public class PopupController extends ViewController {
         return popupBackgroundView;
     }
 
-    public interface PopupDelegate {
+    public interface OnPopupDismissListener {
         void onPopupWindowDismiss(PopupController controller);
     }
-    private PopupDelegate popupDelegate;
-    public <T extends PopupController> T setPopupDelegate(PopupDelegate popupDelegate) {
-        this.popupDelegate = popupDelegate;
+    private OnPopupDismissListener onPopupDismissListener;
+    public <T extends PopupController> T setOnPopupDismissListener(OnPopupDismissListener onPopupDismissListener) {
+        this.onPopupDismissListener = onPopupDismissListener;
         return (T) this;
     }
-    public PopupDelegate getPopupDelegate() {
-        if (popupDelegate == null) {
-            popupDelegate = new PopupDelegate() {
+    public OnPopupDismissListener getOnPopupDismissListener() {
+        if (onPopupDismissListener == null) {
+            onPopupDismissListener = new OnPopupDismissListener() {
                 @Override
                 public void onPopupWindowDismiss(PopupController controller) {
                 }
             };
         }
-        return popupDelegate;
+        return onPopupDismissListener;
     }
 
     /**
@@ -345,15 +347,14 @@ public class PopupController extends ViewController {
     }
 
     /* Overrides */
-     
-     
+
     /* Delegates */
 
     /* Protected Methods */
     @CallSuper
     protected void onPopupDismiss() {
-        self.getPopupBackgroundView().removeAllViews();
-        self.getPopupDelegate().onPopupWindowDismiss(self);
+        self.detachFromParent(false);
+        self.getOnPopupDismissListener().onPopupWindowDismiss(self);
     }
      
     /* Private Methods */
