@@ -9,8 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.vilyever.popupcontroller.PopupController;
-import com.vilyever.popupcontroller.SimpleAlertController;
+import com.vilyever.popupcontroller.popup.PopupController;
+import com.vilyever.popupcontroller.popup.PopupDirection;
 
 public class MainActivity extends AppCompatActivity {
     final MainActivity self = this;
@@ -32,15 +32,22 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 
 
-//                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Up, true);
+                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Up, true);
 //                self.popupController.popupInView(self.getWindow().getDecorView(), PopupDirection.Center);
 
-                new SimpleAlertController()
-                                     .setTitle("Title标题")
-                                     .setMessage("Message 信息")
-                                     .setPositiveButtonTitle("确定")
-                                     .setNegativeButtonTitle("取消")
-                                     .show();
+//                if (!self.popupController.isAppeared()) {
+//                    self.popupController.attachToParent((ViewGroup) findViewById(R.id.layout));
+//                }
+//                else {
+//                    self.popupController.detachFromParent();
+//                }
+
+//                new SimpleAlertController()
+//                                     .setTitle("Title标题")
+//                                     .setMessage("Message 信息")
+//                                     .setPositiveButtonTitle("确定")
+//                                     .setNegativeButtonTitle("取消")
+//                                     .show();
             }
         });
 
@@ -50,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
         self.popupController.setEdgeRoundedRadius(20);
         self.popupController.setPopupShadowRadius(30);
         self.popupController.setDirectionArrowHeight(50);
-
+//        self.popupController.setAttachAnimationPerformer(new FadeInAnimationPerformer().setAnimationDirection(AnimationDirection.Left));
+//        self.popupController.setDetachAnimationPerformer(new FadeOutAnimationPerformer().setAnimationDirection(AnimationDirection.Right));
     }
 
     @Override
