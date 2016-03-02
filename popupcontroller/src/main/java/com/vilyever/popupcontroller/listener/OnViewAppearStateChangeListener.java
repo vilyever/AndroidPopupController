@@ -1,4 +1,6 @@
-package com.vilyever.popupcontroller;
+package com.vilyever.popupcontroller.listener;
+
+import com.vilyever.popupcontroller.ViewController;
 
 /**
  * OnViewAppearStateChangeListener

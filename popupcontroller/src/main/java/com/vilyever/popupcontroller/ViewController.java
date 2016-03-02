@@ -8,6 +8,9 @@ import android.widget.FrameLayout;
 
 import com.vilyever.popupcontroller.animation.AnimationPerformer;
 import com.vilyever.popupcontroller.animation.OnAnimationStateChangeListener;
+import com.vilyever.popupcontroller.listener.OnViewAppearStateChangeListener;
+import com.vilyever.popupcontroller.listener.OnViewAttachStateChangeListener;
+import com.vilyever.popupcontroller.listener.OnViewLayoutChangeListener;
 
 import java.util.ArrayList;
 

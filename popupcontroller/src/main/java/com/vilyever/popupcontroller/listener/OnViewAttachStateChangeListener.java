@@ -1,6 +1,8 @@
-package com.vilyever.popupcontroller;
+package com.vilyever.popupcontroller.listener;
 
 import android.view.ViewGroup;
+
+import com.vilyever.popupcontroller.ViewController;
 
 /**
  * OnViewAttachStateChangeListener

@@ -1,10 +1,12 @@
-package com.vilyever.popupcontroller;
+package com.vilyever.popupcontroller.listener;
 
 import android.graphics.Rect;
 
+import com.vilyever.popupcontroller.ViewController;
+
 /**
  * OnViewLayoutChangeListener
- * AndroidPopupController <com.vilyever.popupcontroller>
+ * AndroidPopupController <com.vilyever.popupcontroller.listener>
  * Created by vilyever on 2016/3/2.
  * Feature:
  * {@link ViewController}根视图的Layout改变监听
