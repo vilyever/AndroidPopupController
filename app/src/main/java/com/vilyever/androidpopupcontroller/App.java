@@ -3,8 +3,6 @@ package com.vilyever.androidpopupcontroller;
 import android.app.Application;
 import android.content.ComponentCallbacks;
 
-import com.vilyever.contextholder.VDContextHolder;
-
 /**
  * App
  * AndroidPopupController <com.vilyever.androidpopupcontroller>
@@ -20,7 +18,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        VDContextHolder.initial(self);
 
 //        ACRA.init(this);
 //        HttpSender httpSender = new HttpSender(HttpSender.Method.PUT,

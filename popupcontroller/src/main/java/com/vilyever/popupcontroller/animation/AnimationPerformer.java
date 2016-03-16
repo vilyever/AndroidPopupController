@@ -3,7 +3,7 @@ package com.vilyever.popupcontroller.animation;
 import android.view.View;
 
 import com.vilyever.popupcontroller.R;
-import com.vilyever.resource.VDResource;
+import com.vilyever.resource.Resource;
 
 /**
  * AnimationPerformer
@@ -14,8 +14,8 @@ import com.vilyever.resource.VDResource;
 public abstract class AnimationPerformer {
     final AnimationPerformer self = this;
 
-    public final static int DefaultDirectionMoveDistance = VDResource.getDimensionPixelSize(R.dimen.controllerAnimationDirectionMoveDistance);
-    public final static int DefaultAnimateDuration = VDResource.getInteger(R.integer.controllerAnimateDuration);
+    public final static int DefaultDirectionMoveDistance = Resource.getDimensionPixelSize(R.dimen.controllerAnimationDirectionMoveDistance);
+    public final static int DefaultAnimateDuration = Resource.getInteger(R.integer.controllerAnimateDuration);
     
     /* Constructors */
     

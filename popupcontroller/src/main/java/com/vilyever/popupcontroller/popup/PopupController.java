@@ -41,12 +41,12 @@ public class PopupController extends ViewController {
 
     /** @see #popupFromView(View, PopupDirection, boolean, int, int)  */
     public <T extends PopupController> T popupFromView(@NonNull View anchorView, @NonNull PopupDirection popupDirection) {
-        return self.popupFromView(anchorView, popupDirection, false, 0, 0);
+        return popupFromView(anchorView, popupDirection, false, 0, 0);
     }
 
     /** @see #popupFromView(View, PopupDirection, boolean, int, int)  */
     public <T extends PopupController> T popupFromView(@NonNull View anchorView, @NonNull PopupDirection popupDirection, boolean withArrow) {
-        return self.popupFromView(anchorView, popupDirection, withArrow, 0, 0);
+        return popupFromView(anchorView, popupDirection, withArrow, 0, 0);
     }
     
     /**
@@ -58,22 +58,22 @@ public class PopupController extends ViewController {
      * @param offsetY Y轴偏移量
      */
     public <T extends PopupController> T popupFromView(@NonNull View anchorView, @NonNull PopupDirection popupDirection, boolean withArrow, int offsetX, int offsetY) {
-        if (!self.getPopupWindow().isShowing()) {
+        if (!getPopupWindow().isShowing()) {
 
-            self.attachToParent(self.getPopupBackgroundView());
+            attachToParent(getPopupBackgroundView());
 
             if (withArrow) {
-                self.getPopupBackgroundView().setPopupDirection(popupDirection);
+                getPopupBackgroundView().setPopupDirection(popupDirection);
             }
             else {
-                self.getPopupBackgroundView().setPopupDirection(PopupDirection.Center);
+                getPopupBackgroundView().setPopupDirection(PopupDirection.Center);
             }
 
-            self.getPopupWindow().setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-            self.getPopupWindow().setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-            self.getPopupWindow().getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-            int popupWidth = self.getPopupWindow().getContentView().getMeasuredWidth();
-            int popupHeight = self.getPopupWindow().getContentView().getMeasuredHeight();
+            getPopupWindow().setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+            getPopupWindow().setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            getPopupWindow().getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            int popupWidth = getPopupWindow().getContentView().getMeasuredWidth();
+            int popupHeight = getPopupWindow().getContentView().getMeasuredHeight();
 
             int[] location = new int[2];
             anchorView.getLocationInWindow(location);
@@ -88,40 +88,40 @@ public class PopupController extends ViewController {
                     popupY = originY - (popupHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     break;
                 case Left:
-                    popupX = originX - popupWidth + self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupX = originX - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - (popupHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     break;
                 case Up:
                     popupX = originX - (popupWidth / 2 - anchorView.getWidth() / 2) + offsetX;
-                    popupY = originY - popupHeight + self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupY = originY - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
                 case Right:
-                    popupX = originX + anchorView.getWidth() - self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupX = originX + anchorView.getWidth() - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - (popupHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     break;
                 case Down:
                     popupX = originX - (popupWidth / 2 - anchorView.getWidth() / 2) + offsetX;
-                    popupY = originY + anchorView.getHeight() - self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupY = originY + anchorView.getHeight() - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
                 case LeftUp:
-                    popupX = originX - popupWidth + self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
-                    popupY = originY - popupHeight + self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupX = originX - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupY = originY - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
                 case RightUp:
-                    popupX = originX + anchorView.getWidth() - self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
-                    popupY = originY - popupHeight + self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupX = originX + anchorView.getWidth() - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupY = originY - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
                 case RightDown:
-                    popupX = originX + anchorView.getWidth() - self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
-                    popupY = originY + anchorView.getHeight() - self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupX = originX + anchorView.getWidth() - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupY = originY + anchorView.getHeight() - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
                 case LeftDown:
-                    popupX = originX - popupWidth + self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
-                    popupY = originY + anchorView.getHeight() - self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupX = originX - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupY = originY + anchorView.getHeight() - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
             }
 
-            self.getPopupWindow().showAtLocation(anchorView, Gravity.START | Gravity.TOP, popupX, popupY);
+            getPopupWindow().showAtLocation(anchorView, Gravity.START | Gravity.TOP, popupX, popupY);
         }
 
         return (T) this;
@@ -129,7 +129,7 @@ public class PopupController extends ViewController {
 
     /** @see #popupInView(View, PopupDirection, int, int)  */
     public <T extends PopupController> T popupInView(@NonNull View anchorView, @NonNull PopupDirection popupDirection) {
-        return self.popupInView(anchorView, popupDirection, 0, 0);
+        return popupInView(anchorView, popupDirection, 0, 0);
     }
 
     /**
@@ -140,17 +140,17 @@ public class PopupController extends ViewController {
      * @param offsetY Y轴偏移量
      */
     public <T extends PopupController> T popupInView(@NonNull View anchorView, @NonNull PopupDirection popupDirection, int offsetX, int offsetY) {
-        if (!self.getPopupWindow().isShowing()) {
+        if (!getPopupWindow().isShowing()) {
 
-            self.attachToParent(self.getPopupBackgroundView());
+            attachToParent(getPopupBackgroundView());
 
-            self.getPopupBackgroundView().setPopupDirection(PopupDirection.Center);
+            getPopupBackgroundView().setPopupDirection(PopupDirection.Center);
 
-            self.getPopupWindow().setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-            self.getPopupWindow().setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-            self.getPopupWindow().getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-            int popupWidth = self.getPopupWindow().getContentView().getMeasuredWidth();
-            int popupHeight = self.getPopupWindow().getContentView().getMeasuredHeight();
+            getPopupWindow().setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+            getPopupWindow().setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            getPopupWindow().getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            int popupWidth = getPopupWindow().getContentView().getMeasuredWidth();
+            int popupHeight = getPopupWindow().getContentView().getMeasuredHeight();
 
             int[] location = new int[2];
             anchorView.getLocationInWindow(location);
@@ -165,40 +165,40 @@ public class PopupController extends ViewController {
                     popupY = originY + (anchorView.getHeight() / 2 - popupHeight / 2) + offsetY;
                     break;
                 case Left:
-                    popupX = originX - self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupX = originX - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - (popupHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     break;
                 case Up:
                     popupX = originX - (popupWidth / 2 - anchorView.getWidth() / 2) + offsetX;
-                    popupY = originY - self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupY = originY - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
                 case Right:
-                    popupX = originX + anchorView.getWidth() - popupWidth + self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupX = originX + anchorView.getWidth() - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - (popupHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     break;
                 case Down:
                     popupX = originX - (popupWidth / 2 - anchorView.getWidth() / 2) + offsetX;
-                    popupY = originY + anchorView.getHeight() - popupHeight + self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupY = originY + anchorView.getHeight() - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
                 case LeftUp:
-                    popupX = originX - self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
-                    popupY = originY - self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupX = originX - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupY = originY - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
                 case RightUp:
-                    popupX = originX + anchorView.getWidth() - popupWidth + self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
-                    popupY = originY - self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupX = originX + anchorView.getWidth() - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupY = originY - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
                 case RightDown:
-                    popupX = originX + anchorView.getWidth() - popupWidth + self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
-                    popupY = originY + anchorView.getHeight() - popupHeight + self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupX = originX + anchorView.getWidth() - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupY = originY + anchorView.getHeight() - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
                 case LeftDown:
-                    popupX = originX - self.getPopupBackgroundView().getPopupShadowRadius() + offsetX;
-                    popupY = originY + anchorView.getHeight() - popupHeight + self.getPopupBackgroundView().getPopupShadowRadius() + offsetY;
+                    popupX = originX - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
+                    popupY = originY + anchorView.getHeight() - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
             }
 
-            self.getPopupWindow().showAtLocation(anchorView, Gravity.START | Gravity.TOP, popupX, popupY);
+            getPopupWindow().showAtLocation(anchorView, Gravity.START | Gravity.TOP, popupX, popupY);
         }
 
         return (T) this;
@@ -208,8 +208,8 @@ public class PopupController extends ViewController {
      * 消除popupWindow
      */
     public <T extends PopupController> T dismissPopup() {
-        if (self.getPopupWindow().isShowing()) {
-            self.getPopupWindow().dismiss();
+        if (getPopupWindow().isShowing()) {
+            getPopupWindow().dismiss();
         }
 
         return (T) this;
@@ -222,7 +222,7 @@ public class PopupController extends ViewController {
      * @return this
      */
     public <T extends PopupController> T setPopupBackgroundColor(int popupBackgroundColor) {
-        self.getPopupBackgroundView().setPopupBackgroundColor(popupBackgroundColor);
+        getPopupBackgroundView().setPopupBackgroundColor(popupBackgroundColor);
         return (T) this;
     }
 
@@ -233,7 +233,7 @@ public class PopupController extends ViewController {
      * @return this
      */
     public <T extends PopupController> T setEdgeRoundedRadius(int edgeRoundedRadius) {
-        self.getPopupBackgroundView().setEdgeRoundedRadius(edgeRoundedRadius);
+        getPopupBackgroundView().setEdgeRoundedRadius(edgeRoundedRadius);
         return (T) this;
     }
 
@@ -244,7 +244,7 @@ public class PopupController extends ViewController {
      * @return this
      */
     public <T extends PopupController> T setDirectionArrowHeight(int directionArrowHeight) {
-        self.getPopupBackgroundView().setDirectionArrowHeight(directionArrowHeight);
+        getPopupBackgroundView().setDirectionArrowHeight(directionArrowHeight);
         return (T) this;
     }
 
@@ -255,7 +255,7 @@ public class PopupController extends ViewController {
      * @return this
      */
     public <T extends PopupController> T setPopupShadowRadius(int popupShadowRadius) {
-        self.getPopupBackgroundView().setPopupShadowRadius(popupShadowRadius);
+        getPopupBackgroundView().setPopupShadowRadius(popupShadowRadius);
         return (T) this;
     }
 
@@ -264,7 +264,7 @@ public class PopupController extends ViewController {
      * @return this
      */
     public <T extends PopupController> T setEdgePadding(int left, int top, int right, int bottom) {
-        self.getPopupBackgroundView().setEdgePadding(new Rect(left, top, right, bottom));
+        getPopupBackgroundView().setEdgePadding(new Rect(left, top, right, bottom));
         return (T) this;
     }
     
@@ -273,20 +273,20 @@ public class PopupController extends ViewController {
     private PopupWindow popupWindow;
     protected PopupWindow getPopupWindow() {
         if (popupWindow == null) {
-            self.popupWindow = new PopupWindow(self.getPopupBackgroundView());
-            self.popupWindow.setFocusable(true);
-            self.popupWindow.setClippingEnabled(false);
-            self.popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
-            self.popupWindow.setBackgroundDrawable(new ColorDrawable());
+            popupWindow = new PopupWindow(getPopupBackgroundView());
+            popupWindow.setFocusable(true);
+            popupWindow.setClippingEnabled(false);
+            popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+            popupWindow.setBackgroundDrawable(new ColorDrawable());
 
-            self.popupWindow.setTouchInterceptor(new View.OnTouchListener() {
+            popupWindow.setTouchInterceptor(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if (!self.isDismissOnTouchOutside()) {
+                    if (!isDismissOnTouchOutside()) {
                         final int x = (int) event.getX();
                         final int y = (int) event.getY();
                         if ((event.getAction() == MotionEvent.ACTION_DOWN)
-                            && ((x < 0) || (x >= self.getPopupWindow().getContentView().getWidth()) || (y < 0) || (y >= self.getPopupWindow().getContentView().getHeight()))) {
+                            && ((x < 0) || (x >= getPopupWindow().getContentView().getWidth()) || (y < 0) || (y >= getPopupWindow().getContentView().getHeight()))) {
                             return true;
                         }
                         else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
@@ -297,10 +297,10 @@ public class PopupController extends ViewController {
                 }
             });
 
-            self.popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
                 public void onDismiss() {
-                    self.onPopupDismiss();
+                    onPopupDismiss();
                 }
             });
         }
@@ -310,7 +310,7 @@ public class PopupController extends ViewController {
     private PopupBackgroundView popupBackgroundView;
     protected PopupBackgroundView getPopupBackgroundView() {
         if (popupBackgroundView == null) {
-            popupBackgroundView = new PopupBackgroundView(self.getContext());
+            popupBackgroundView = new PopupBackgroundView(getContext());
         }
         return popupBackgroundView;
     }
@@ -353,8 +353,8 @@ public class PopupController extends ViewController {
     /* Protected Methods */
     @CallSuper
     protected void onPopupDismiss() {
-        self.detachFromParent(false);
-        self.getOnPopupDismissListener().onPopupWindowDismiss(self);
+        detachFromParent(false);
+        getOnPopupDismissListener().onPopupWindowDismiss(self);
     }
      
     /* Private Methods */

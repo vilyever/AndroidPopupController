@@ -13,11 +13,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.vilyever.contextholder.VDContextHolder;
+import com.vilyever.contextholder.ContextHolder;
 import com.vilyever.popupcontroller.R;
 import com.vilyever.popupcontroller.popup.PopupController;
 import com.vilyever.popupcontroller.popup.PopupDirection;
-import com.vilyever.resource.VDResource;
+import com.vilyever.resource.Resource;
 
 /**
  * SimpleAlertController
@@ -29,49 +29,49 @@ import com.vilyever.resource.VDResource;
  */
 public class SimpleAlertController extends PopupController {
     final SimpleAlertController self = this;
-    
-    
+
+
     /* Constructors */
     public SimpleAlertController() {
-        super(VDContextHolder.getContext());
+        super(ContextHolder.getContext());
 
-        self.setView(self.getRootFrameLayout());
-        self.initial();
+        setView(getRootFrameLayout());
+        init();
     }
-    
-    
+
+
     /* Public Methods */
     /**
      * 显示alert窗口
      */
     public <T extends SimpleAlertController> T show() {
-        if (self.getNegativeButtonTitle() == null && self.getPositiveButtonTitle() == null) {
-            self.setPositiveButtonTitle(VDResource.getString(R.string.defaultAlertPositiveButtonTitle));
+        if (getNegativeButtonTitle() == null && getPositiveButtonTitle() == null) {
+            setPositiveButtonTitle(Resource.getString(R.string.defaultAlertPositiveButtonTitle));
         }
 
-        if (self.getTitle() == null && self.getMessage() == null) {
-            self.setTitle("");
+        if (getTitle() == null && getMessage() == null) {
+            setTitle("");
         }
 
-        if (self.getNegativeButtonTitle() == null || self.getPositiveButtonTitle() == null) {
-            self.getSplitButtonView().setVisibility(View.GONE);
+        if (getNegativeButtonTitle() == null || getPositiveButtonTitle() == null) {
+            getSplitButtonView().setVisibility(View.GONE);
         }
         else {
-            self.getSplitButtonView().setVisibility(View.VISIBLE);
+            getSplitButtonView().setVisibility(View.VISIBLE);
         }
 
-        self.attachDecorFrameLayoutToWindow();
-        self.getDecorFrameLayout().post(new Runnable() {
+        attachDecorFrameLayoutToWindow();
+        getDecorFrameLayout().post(new Runnable() {
             @Override
             public void run() {
-                self.popupInView(getDecorFrameLayout(), PopupDirection.Center);
+                popupInView(getDecorFrameLayout(), PopupDirection.Center);
             }
         });
 
         return (T) this;
     }
 
-    
+
     /* Properties */
     /**
      * 附加于window的根视图，用于展示alert
@@ -79,7 +79,7 @@ public class SimpleAlertController extends PopupController {
     private FrameLayout decorFrameLayout;
     protected FrameLayout getDecorFrameLayout() {
         if (decorFrameLayout == null) {
-            decorFrameLayout = new FrameLayout(self.getContext());
+            decorFrameLayout = new FrameLayout(getContext());
             decorFrameLayout.setVisibility(View.GONE);
         }
         return decorFrameLayout;
@@ -95,7 +95,7 @@ public class SimpleAlertController extends PopupController {
     }
     private FrameLayout getRootFrameLayout() {
         if (rootFrameLayout == null) {
-            rootFrameLayout = new FrameLayout(self.getContext());
+            rootFrameLayout = new FrameLayout(getContext());
             rootFrameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
         return rootFrameLayout;
@@ -111,8 +111,8 @@ public class SimpleAlertController extends PopupController {
     }
     public LinearLayout getAlertLinearLayout() {
         if (alertLinearLayout == null) {
-            alertLinearLayout = new LinearLayout(self.getContext());
-            alertLinearLayout.setLayoutParams(new FrameLayout.LayoutParams(VDResource.getDimensionPixelSize(R.dimen.simpleAlertWidth), ViewGroup.LayoutParams.WRAP_CONTENT));
+            alertLinearLayout = new LinearLayout(getContext());
+            alertLinearLayout.setLayoutParams(new FrameLayout.LayoutParams(Resource.getDimensionPixelSize(R.dimen.simpleAlertWidth), ViewGroup.LayoutParams.WRAP_CONTENT));
             alertLinearLayout.setOrientation(LinearLayout.VERTICAL);
         }
         return alertLinearLayout;
@@ -128,13 +128,13 @@ public class SimpleAlertController extends PopupController {
     }
     public TextView getTitleLabel() {
         if (titleLabel == null) {
-            titleLabel = new TextView(self.getContext());
-            titleLabel.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, VDResource.getDimensionPixelSize(R.dimen.simpleAlertTitleHeight)));
+            titleLabel = new TextView(getContext());
+            titleLabel.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Resource.getDimensionPixelSize(R.dimen.simpleAlertTitleHeight)));
             titleLabel.setGravity(Gravity.CENTER);
             titleLabel.setLines(1);
             titleLabel.setTypeface(Typeface.DEFAULT_BOLD);
-            titleLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, VDResource.getDimensionPixelSize(R.dimen.simpleAlertTitleSize));
-            titleLabel.setTextColor(VDResource.getColor(R.color.simpleAlertTitle));
+            titleLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, Resource.getDimensionPixelSize(R.dimen.simpleAlertTitleSize));
+            titleLabel.setTextColor(Resource.getColor(R.color.simpleAlertTitle));
             titleLabel.setVisibility(View.GONE);
         }
         return titleLabel;
@@ -150,14 +150,14 @@ public class SimpleAlertController extends PopupController {
     }
     public TextView getMessageLabel() {
         if (messageLabel == null) {
-            messageLabel = new TextView(self.getContext());
+            messageLabel = new TextView(getContext());
             messageLabel.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            int margin = VDResource.getDimensionPixelSize(R.dimen.simpleAlertMargin);
+            int margin = Resource.getDimensionPixelSize(R.dimen.simpleAlertMargin);
             ((LinearLayout.LayoutParams) messageLabel.getLayoutParams()).setMargins(margin, margin, margin, margin);
-            messageLabel.setMaxHeight(VDResource.getDimensionPixelSize(R.dimen.simpleAlertMessageMaxHeight));
+            messageLabel.setMaxHeight(Resource.getDimensionPixelSize(R.dimen.simpleAlertMessageMaxHeight));
             messageLabel.setGravity(Gravity.CENTER);
-            messageLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, VDResource.getDimensionPixelSize(R.dimen.simpleAlertMessageSize));
-            messageLabel.setTextColor(VDResource.getColor(R.color.simpleAlertMessage));
+            messageLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, Resource.getDimensionPixelSize(R.dimen.simpleAlertMessageSize));
+            messageLabel.setTextColor(Resource.getColor(R.color.simpleAlertMessage));
             messageLabel.setVisibility(View.GONE);
         }
         return messageLabel;
@@ -173,22 +173,22 @@ public class SimpleAlertController extends PopupController {
     }
     public View getSplitVerticalView() {
         if (splitVerticalView == null) {
-            splitVerticalView = new View(self.getContext());
-            splitVerticalView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, VDResource.getDimensionPixelSize(R.dimen.simpleAlertSplitLine)));
-            splitVerticalView.setBackgroundColor(VDResource.getColor(R.color.simpleAlertSplitLine));
+            splitVerticalView = new View(getContext());
+            splitVerticalView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Resource.getDimensionPixelSize(R.dimen.simpleAlertSplitLine)));
+            splitVerticalView.setBackgroundColor(Resource.getColor(R.color.simpleAlertSplitLine));
         }
         return splitVerticalView;
     }
-    
+
     private LinearLayout buttonLayout;
     private SimpleAlertController setButtonLayout(LinearLayout buttonLayout) {
         this.buttonLayout = buttonLayout;
-        return this; 
+        return this;
     }
     public LinearLayout getButtonLayout() {
         if (buttonLayout == null) {
-            buttonLayout = new LinearLayout(self.getContext());
-            buttonLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, VDResource.getDimensionPixelSize(R.dimen.simpleAlertButtonHeight)));
+            buttonLayout = new LinearLayout(getContext());
+            buttonLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Resource.getDimensionPixelSize(R.dimen.simpleAlertButtonHeight)));
             buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
         }
         return buttonLayout;
@@ -204,9 +204,9 @@ public class SimpleAlertController extends PopupController {
     }
     public View getSplitButtonView() {
         if (splitButtonView == null) {
-            splitButtonView = new View(self.getContext());
-            splitButtonView.setLayoutParams(new LinearLayout.LayoutParams(VDResource.getDimensionPixelSize(R.dimen.simpleAlertSplitLine), ViewGroup.LayoutParams.MATCH_PARENT));
-            splitButtonView.setBackgroundColor(VDResource.getColor(R.color.simpleAlertSplitLine));
+            splitButtonView = new View(getContext());
+            splitButtonView.setLayoutParams(new LinearLayout.LayoutParams(Resource.getDimensionPixelSize(R.dimen.simpleAlertSplitLine), ViewGroup.LayoutParams.MATCH_PARENT));
+            splitButtonView.setBackgroundColor(Resource.getColor(R.color.simpleAlertSplitLine));
         }
         return splitButtonView;
     }
@@ -221,13 +221,13 @@ public class SimpleAlertController extends PopupController {
     }
     public Button getNegativeButton() {
         if (negativeButton == null) {
-            negativeButton = new Button(self.getContext());
+            negativeButton = new Button(getContext());
             negativeButton.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT));
             ((LinearLayout.LayoutParams) negativeButton.getLayoutParams()).weight = 1;
             negativeButton.setGravity(Gravity.CENTER);
             negativeButton.setLines(1);
-            negativeButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, VDResource.getDimensionPixelSize(R.dimen.simpleAlertButtonTitleSize));
-            negativeButton.setTextColor(VDResource.getColor(R.color.simpleAlertButtonTitle));
+            negativeButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, Resource.getDimensionPixelSize(R.dimen.simpleAlertButtonTitleSize));
+            negativeButton.setTextColor(Resource.getColor(R.color.simpleAlertButtonTitle));
             negativeButton.setBackground(null);
             negativeButton.setVisibility(View.GONE);
         }
@@ -244,14 +244,14 @@ public class SimpleAlertController extends PopupController {
     }
     public Button getPositiveButton() {
         if (positiveButton == null) {
-            positiveButton = new Button(self.getContext());
+            positiveButton = new Button(getContext());
             positiveButton.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT));
             ((LinearLayout.LayoutParams) positiveButton.getLayoutParams()).weight = 1;
             positiveButton.setGravity(Gravity.CENTER);
             positiveButton.setLines(1);
             positiveButton.setTypeface(Typeface.DEFAULT_BOLD);
-            positiveButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, VDResource.getDimensionPixelSize(R.dimen.simpleAlertButtonTitleSize));
-            positiveButton.setTextColor(VDResource.getColor(R.color.simpleAlertButtonTitle));
+            positiveButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, Resource.getDimensionPixelSize(R.dimen.simpleAlertButtonTitleSize));
+            positiveButton.setTextColor(Resource.getColor(R.color.simpleAlertButtonTitle));
             positiveButton.setBackground(null);
             positiveButton.setVisibility(View.GONE);
         }
@@ -265,8 +265,8 @@ public class SimpleAlertController extends PopupController {
     private String title;
     public <T extends SimpleAlertController> T setTitle(String title) {
         this.title = title;
-        self.getTitleLabel().setText(title);
-        self.getTitleLabel().setVisibility(title != null ? View.VISIBLE : View.GONE);
+        getTitleLabel().setText(title);
+        getTitleLabel().setVisibility(title != null ? View.VISIBLE : View.GONE);
         return (T) this;
     }
     public String getTitle() {
@@ -280,8 +280,8 @@ public class SimpleAlertController extends PopupController {
     private String message;
     public <T extends SimpleAlertController> T setMessage(String message) {
         this.message = message;
-        self.getMessageLabel().setText(message);
-        self.getMessageLabel().setVisibility(message != null ? View.VISIBLE : View.GONE);
+        getMessageLabel().setText(message);
+        getMessageLabel().setVisibility(message != null ? View.VISIBLE : View.GONE);
         return (T) this;
     }
     public String getMessage() {
@@ -295,8 +295,8 @@ public class SimpleAlertController extends PopupController {
     private String negativeButtonTitle;
     public <T extends SimpleAlertController> T setNegativeButtonTitle(String negativeButtonTitle) {
         this.negativeButtonTitle = negativeButtonTitle;
-        self.getNegativeButton().setText(negativeButtonTitle);
-        self.getNegativeButton().setVisibility(negativeButtonTitle != null ? View.VISIBLE : View.GONE);
+        getNegativeButton().setText(negativeButtonTitle);
+        getNegativeButton().setVisibility(negativeButtonTitle != null ? View.VISIBLE : View.GONE);
         return (T) this;
     }
     public String getNegativeButtonTitle() {
@@ -310,8 +310,8 @@ public class SimpleAlertController extends PopupController {
     private String positiveButtonTitle;
     public <T extends SimpleAlertController> T setPositiveButtonTitle(String positiveButtonTitle) {
         this.positiveButtonTitle = positiveButtonTitle;
-        self.getPositiveButton().setText(positiveButtonTitle);
-        self.getPositiveButton().setVisibility(positiveButtonTitle != null ? View.VISIBLE : View.GONE);
+        getPositiveButton().setText(positiveButtonTitle);
+        getPositiveButton().setVisibility(positiveButtonTitle != null ? View.VISIBLE : View.GONE);
         return (T) this;
     }
     public String getPositiveButtonTitle() {
@@ -362,56 +362,56 @@ public class SimpleAlertController extends PopupController {
     protected void onPopupDismiss() {
         super.onPopupDismiss();
 
-        self.dettachDecorFrameLayoutToWindow();
+        dettachDecorFrameLayoutToWindow();
     }
 
     /* Delegates */
-     
-     
+
+
     /* Private Methods */
-    private void initial() {
-        self.getAlertLinearLayout().addView(self.getTitleLabel());
-        self.getAlertLinearLayout().addView(self.getMessageLabel());
-        self.getAlertLinearLayout().addView(self.getSplitVerticalView());
-        self.getButtonLayout().addView(self.getNegativeButton());
-        self.getButtonLayout().addView(self.getSplitButtonView());
-        self.getButtonLayout().addView(self.getPositiveButton());
-        self.getAlertLinearLayout().addView(self.getButtonLayout());
+    private void init() {
+        getAlertLinearLayout().addView(getTitleLabel());
+        getAlertLinearLayout().addView(getMessageLabel());
+        getAlertLinearLayout().addView(getSplitVerticalView());
+        getButtonLayout().addView(getNegativeButton());
+        getButtonLayout().addView(getSplitButtonView());
+        getButtonLayout().addView(getPositiveButton());
+        getAlertLinearLayout().addView(getButtonLayout());
 
-        self.getRootFrameLayout().addView(self.getAlertLinearLayout());
+        getRootFrameLayout().addView(getAlertLinearLayout());
 
-        self.getMessageLabel().setMovementMethod(new ScrollingMovementMethod());
-        self.getNegativeButton().setOnClickListener(new View.OnClickListener() {
+        getMessageLabel().setMovementMethod(new ScrollingMovementMethod());
+        getNegativeButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                self.dismissPopup();
-                self.getOnNegativeButtonClickListener().onButtonClick(self, (Button) v);
+                dismissPopup();
+                getOnNegativeButtonClickListener().onButtonClick(self, (Button) v);
             }
         });
-        self.getPositiveButton().setOnClickListener(new View.OnClickListener() {
+        getPositiveButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                self.dismissPopup();
-                self.getOnPositiveButtonClickListener().onButtonClick(self, (Button) v);
+                dismissPopup();
+                getOnPositiveButtonClickListener().onButtonClick(self, (Button) v);
             }
         });
 
-        self.setDismissOnTouchOutside(false);
-        self.setPopupBackgroundColor(VDResource.getColor(R.color.simpleAlertBackground));
-        self.setEdgeRoundedRadius(VDResource.getDimensionPixelSize(R.dimen.simpleAlertRoundedRadius));
+        setDismissOnTouchOutside(false);
+        setPopupBackgroundColor(Resource.getColor(R.color.simpleAlertBackground));
+        setEdgeRoundedRadius(Resource.getDimensionPixelSize(R.dimen.simpleAlertRoundedRadius));
     }
 
     /**
      * 添加layout到window，用于之后的弹窗
      */
     private void attachDecorFrameLayoutToWindow() {
-        if (self.getDecorFrameLayout().getParent() == null) {
-            WindowManager windowManager = (WindowManager) self.getContext().getSystemService(Context.WINDOW_SERVICE);
+        if (getDecorFrameLayout().getParent() == null) {
+            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
             WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.packageName = self.getContext().getPackageName();
+            layoutParams.packageName = getContext().getPackageName();
             layoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
 
-            windowManager.addView(self.getDecorFrameLayout(), layoutParams);
+            windowManager.addView(getDecorFrameLayout(), layoutParams);
         }
     }
 
@@ -419,9 +419,9 @@ public class SimpleAlertController extends PopupController {
      * 解离之前添加到window的layout，在alert消失时调用
      */
     private void dettachDecorFrameLayoutToWindow() {
-        if (self.getDecorFrameLayout().getParent() != null) {
-            WindowManager windowManager = (WindowManager) self.getContext().getSystemService(Context.WINDOW_SERVICE);
-            windowManager.removeView(self.getDecorFrameLayout());
+        if (getDecorFrameLayout().getParent() != null) {
+            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+            windowManager.removeView(getDecorFrameLayout());
         }
     }
 

@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -29,17 +28,17 @@ public class PopupBackgroundView extends FrameLayout {
     /* Constructors */
     public PopupBackgroundView(Context context) {
         super(context);
-        self.initial();
+        init();
     }
     
     public PopupBackgroundView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        self.initial();
+        init();
     }
     
     public PopupBackgroundView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        self.initial();
+        init();
     }
     
     
@@ -54,7 +53,7 @@ public class PopupBackgroundView extends FrameLayout {
     private int popupBackgroundColor;
     public PopupBackgroundView setPopupBackgroundColor(int popupBackgroundColor) {
         this.popupBackgroundColor = popupBackgroundColor;
-        self.invalidate();
+        invalidate();
         return this;
     }
     public int getPopupBackgroundColor() {
@@ -67,7 +66,7 @@ public class PopupBackgroundView extends FrameLayout {
     private int edgeRoundedRadius;
     public PopupBackgroundView setEdgeRoundedRadius(int edgeRoundedRadius) {
         this.edgeRoundedRadius = edgeRoundedRadius;
-        self.invalidate();
+        invalidate();
         return this;
     }
     public int getEdgeRoundedRadius() {
@@ -80,7 +79,7 @@ public class PopupBackgroundView extends FrameLayout {
     private PopupDirection popupDirection;
     public PopupBackgroundView setPopupDirection(PopupDirection popupDirection) {
         this.popupDirection = popupDirection;
-        self.updatePadding();
+        updatePadding();
         return this;
     }
     public PopupDirection getPopupDirection() {
@@ -96,7 +95,7 @@ public class PopupBackgroundView extends FrameLayout {
     private int directionArrowHeight;
     public PopupBackgroundView setDirectionArrowHeight(int directionArrowHeight) {
         this.directionArrowHeight = directionArrowHeight;
-        self.invalidate();
+        invalidate();
         return this;
     }
     public int getDirectionArrowHeight() {
@@ -109,7 +108,7 @@ public class PopupBackgroundView extends FrameLayout {
     private int popupShadowRadius;
     public PopupBackgroundView setPopupShadowRadius(int popupShadowRadius) {
         this.popupShadowRadius = popupShadowRadius;
-        self.updatePadding();
+        updatePadding();
         return this;
     }
     public int getPopupShadowRadius() {
@@ -122,7 +121,7 @@ public class PopupBackgroundView extends FrameLayout {
     private Rect edgePadding;
     public PopupBackgroundView setEdgePadding(Rect edgePadding) {
         this.edgePadding = edgePadding;
-        self.updatePadding();
+        updatePadding();
         return this;
     }
     public Rect getEdgePadding() {
@@ -179,32 +178,32 @@ public class PopupBackgroundView extends FrameLayout {
         super.onDraw(canvas);
 
         // 等边三角形箭头边长
-        int triangleLength = (int) (self.getDirectionArrowHeight() * Math.tan(Math.PI / 6) * 2);
+        int triangleLength = (int) (getDirectionArrowHeight() * Math.tan(Math.PI / 6) * 2);
     
-        int centerX = self.getWidth() / 2;
-        int centerY = self.getHeight() / 2;
+        int centerX = getWidth() / 2;
+        int centerY = getHeight() / 2;
     
-        int left = self.getPopupShadowRadius();
-        int top = self.getPopupShadowRadius();
-        int right = self.getWidth() - self.getPopupShadowRadius();
-        int bottom = self.getHeight() - self.getPopupShadowRadius();
+        int left = getPopupShadowRadius();
+        int top = getPopupShadowRadius();
+        int right = getWidth() - getPopupShadowRadius();
+        int bottom = getHeight() - getPopupShadowRadius();
     
-        self.getContentRect().set(left, top, right, bottom);
+        getContentRect().set(left, top, right, bottom);
     
-        switch (self.getPopupDirection()) {
+        switch (getPopupDirection()) {
             case Center:
                 break;
             case Left:
-                self.getContentRect().right -= self.getDirectionArrowHeight();
+                getContentRect().right -= getDirectionArrowHeight();
                 break;
             case Up:
-                self.getContentRect().bottom -= self.getDirectionArrowHeight();
+                getContentRect().bottom -= getDirectionArrowHeight();
                 break;
             case Right:
-                self.getContentRect().left += self.getDirectionArrowHeight();
+                getContentRect().left += getDirectionArrowHeight();
                 break;
             case Down:
-                self.getContentRect().top += self.getDirectionArrowHeight();
+                getContentRect().top += getDirectionArrowHeight();
                 break;
         }
 
@@ -215,75 +214,69 @@ public class PopupBackgroundView extends FrameLayout {
 //        double bb = (2 - aa) * Math.PI / 4;
 //        int roundRectRadius = (int) (Math.sqrt(width + height) * Math.sin(aa * atan + bb));
 
-        self.getEdgeRoundedArcRect().set(0, 0, self.self.getEdgeRoundedRadius() * 2, self.self.getEdgeRoundedRadius() * 2);
+        getEdgeRoundedArcRect().set(0, 0, getEdgeRoundedRadius() * 2, getEdgeRoundedRadius() * 2);
     
-        self.getPopupBackgroundPath().reset();
+        getPopupBackgroundPath().reset();
     
-        self.getPopupBackgroundPath().moveTo(self.getContentRect().left + self.self.getEdgeRoundedRadius(), self.getContentRect().top);
+        getPopupBackgroundPath().moveTo(getContentRect().left + getEdgeRoundedRadius(), getContentRect().top);
     
-        if (self.getPopupDirection() == PopupDirection.Down) {
-            self.getPopupBackgroundPath().lineTo(centerX - triangleLength / 2, self.getContentRect().top);
-            self.getPopupBackgroundPath().lineTo(centerX, top);
-            self.getPopupBackgroundPath().lineTo(centerX + triangleLength / 2, self.getContentRect().top);
+        if (getPopupDirection() == PopupDirection.Down) {
+            getPopupBackgroundPath().lineTo(centerX - triangleLength / 2, getContentRect().top);
+            getPopupBackgroundPath().lineTo(centerX, top);
+            getPopupBackgroundPath().lineTo(centerX + triangleLength / 2, getContentRect().top);
         }
-        self.getPopupBackgroundPath().lineTo(self.getContentRect().right - self.self.getEdgeRoundedRadius(), self.getContentRect().top);
-        self.getEdgeRoundedArcRect().offsetTo(self.getContentRect().right - self.self.getEdgeRoundedRadius() * 2, self.getContentRect().top);
-        self.getPopupBackgroundPath().arcTo(self.getEdgeRoundedArcRect(), 270.0f, 90.0f);
+        getPopupBackgroundPath().lineTo(getContentRect().right - getEdgeRoundedRadius(), getContentRect().top);
+        getEdgeRoundedArcRect().offsetTo(getContentRect().right - getEdgeRoundedRadius() * 2, getContentRect().top);
+        getPopupBackgroundPath().arcTo(getEdgeRoundedArcRect(), 270.0f, 90.0f);
     
-        if (self.getPopupDirection() == PopupDirection.Left) {
-            self.getPopupBackgroundPath().lineTo(self.getContentRect().right, centerY - triangleLength / 2);
-            self.getPopupBackgroundPath().lineTo(right, centerY);
-            self.getPopupBackgroundPath().lineTo(self.getContentRect().right, centerY + triangleLength / 2);
+        if (getPopupDirection() == PopupDirection.Left) {
+            getPopupBackgroundPath().lineTo(getContentRect().right, centerY - triangleLength / 2);
+            getPopupBackgroundPath().lineTo(right, centerY);
+            getPopupBackgroundPath().lineTo(getContentRect().right, centerY + triangleLength / 2);
         }
-        self.getPopupBackgroundPath().lineTo(self.getContentRect().right, self.getContentRect().bottom - self.self.getEdgeRoundedRadius());
-        self.getEdgeRoundedArcRect().offsetTo(self.getContentRect().right - self.self.getEdgeRoundedRadius() * 2, self.getContentRect().bottom - self.self.getEdgeRoundedRadius() * 2);
-        self.getPopupBackgroundPath().arcTo(self.getEdgeRoundedArcRect(), 0.0f, 90.0f);
+        getPopupBackgroundPath().lineTo(getContentRect().right, getContentRect().bottom - getEdgeRoundedRadius());
+        getEdgeRoundedArcRect().offsetTo(getContentRect().right - getEdgeRoundedRadius() * 2, getContentRect().bottom - getEdgeRoundedRadius() * 2);
+        getPopupBackgroundPath().arcTo(getEdgeRoundedArcRect(), 0.0f, 90.0f);
     
-        if (self.getPopupDirection() == PopupDirection.Up) {
-            self.getPopupBackgroundPath().lineTo(centerX - triangleLength / 2, self.getContentRect().bottom);
-            self.getPopupBackgroundPath().lineTo(centerX, bottom);
-            self.getPopupBackgroundPath().lineTo(centerX + triangleLength / 2, self.getContentRect().bottom);
+        if (getPopupDirection() == PopupDirection.Up) {
+            getPopupBackgroundPath().lineTo(centerX - triangleLength / 2, getContentRect().bottom);
+            getPopupBackgroundPath().lineTo(centerX, bottom);
+            getPopupBackgroundPath().lineTo(centerX + triangleLength / 2, getContentRect().bottom);
         }
-        self.getPopupBackgroundPath().lineTo(self.getContentRect().left + self.self.getEdgeRoundedRadius(), self.getContentRect().bottom);
-        self.getEdgeRoundedArcRect().offsetTo(self.getContentRect().left, self.getContentRect().bottom - self.self.getEdgeRoundedRadius() * 2);
-        self.getPopupBackgroundPath().arcTo(self.getEdgeRoundedArcRect(), 90.0f, 90.0f);
+        getPopupBackgroundPath().lineTo(getContentRect().left + getEdgeRoundedRadius(), getContentRect().bottom);
+        getEdgeRoundedArcRect().offsetTo(getContentRect().left, getContentRect().bottom - getEdgeRoundedRadius() * 2);
+        getPopupBackgroundPath().arcTo(getEdgeRoundedArcRect(), 90.0f, 90.0f);
     
-        if (self.getPopupDirection() == PopupDirection.Right) {
-            self.getPopupBackgroundPath().lineTo(self.getContentRect().left, centerY - triangleLength / 2);
-            self.getPopupBackgroundPath().lineTo(left, centerY);
-            self.getPopupBackgroundPath().lineTo(self.getContentRect().left, centerY + triangleLength / 2);
+        if (getPopupDirection() == PopupDirection.Right) {
+            getPopupBackgroundPath().lineTo(getContentRect().left, centerY - triangleLength / 2);
+            getPopupBackgroundPath().lineTo(left, centerY);
+            getPopupBackgroundPath().lineTo(getContentRect().left, centerY + triangleLength / 2);
         }
-        self.getPopupBackgroundPath().lineTo(self.getContentRect().left, self.getContentRect().top + self.self.getEdgeRoundedRadius());
-        self.getEdgeRoundedArcRect().offsetTo(self.getContentRect().left, self.getContentRect().top);
-        self.getPopupBackgroundPath().arcTo(self.getEdgeRoundedArcRect(), 180.0f, 90.0f);
+        getPopupBackgroundPath().lineTo(getContentRect().left, getContentRect().top + getEdgeRoundedRadius());
+        getEdgeRoundedArcRect().offsetTo(getContentRect().left, getContentRect().top);
+        getPopupBackgroundPath().arcTo(getEdgeRoundedArcRect(), 180.0f, 90.0f);
     
-        self.getPopupBackgroundPaint().setColor(self.getPopupBackgroundColor());
-        self.getPopupBackgroundPaint().setShadowLayer(self.getPopupShadowRadius(), 0, 0, Color.DKGRAY);
+        getPopupBackgroundPaint().setColor(getPopupBackgroundColor());
+        getPopupBackgroundPaint().setShadowLayer(getPopupShadowRadius(), 0, 0, Color.DKGRAY);
     
-        canvas.drawPath(self.getPopupBackgroundPath(), self.getPopupBackgroundPaint());
+        canvas.drawPath(getPopupBackgroundPath(), getPopupBackgroundPaint());
     }
 
     @Override
     public void setBackground(Drawable background) {
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        System.out.println("onKeyDown " + keyCode);
-        return super.onKeyDown(keyCode, event);
-    }
-
     /* Delegates */
     
     
     /* Private Methods */
-    private void initial() {
-        self.directionArrowHeight = self.getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundArrowHeight);
-        self.popupShadowRadius =  self.getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundShadowRadius);
-        self.popupBackgroundColor = Color.WHITE;
+    private void init() {
+        directionArrowHeight = getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundArrowHeight);
+        popupShadowRadius =  getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundShadowRadius);
+        popupBackgroundColor = Color.WHITE;
 
-        self.setWillNotDraw(false);
-        self.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        setWillNotDraw(false);
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     /**
@@ -291,25 +284,25 @@ public class PopupBackgroundView extends FrameLayout {
      */
     private void updatePadding() {
         int left, top, right, bottom;
-        left = self.getEdgePadding().left + self.getPopupShadowRadius();
-        top = self.getEdgePadding().top + self.getPopupShadowRadius();;
-        right = self.getEdgePadding().right + self.getPopupShadowRadius();;
-        bottom = self.getEdgePadding().bottom + self.getPopupShadowRadius();;
-        switch (self.getPopupDirection()) {
+        left = getEdgePadding().left + getPopupShadowRadius();
+        top = getEdgePadding().top + getPopupShadowRadius();;
+        right = getEdgePadding().right + getPopupShadowRadius();;
+        bottom = getEdgePadding().bottom + getPopupShadowRadius();;
+        switch (getPopupDirection()) {
             case Left:
-                right += self.getDirectionArrowHeight();
+                right += getDirectionArrowHeight();
                 break;
             case Up:
-                bottom += self.getDirectionArrowHeight();
+                bottom += getDirectionArrowHeight();
                 break;
             case Right:
-                left += self.getDirectionArrowHeight();
+                left += getDirectionArrowHeight();
                 break;
             case Down:
-                top += self.getDirectionArrowHeight();
+                top += getDirectionArrowHeight();
                 break;
         }
-        self.setPadding(left, top, right, bottom);
+        setPadding(left, top, right, bottom);
     }
     
 }
