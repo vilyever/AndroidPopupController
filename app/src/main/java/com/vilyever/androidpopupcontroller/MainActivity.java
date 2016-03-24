@@ -43,19 +43,21 @@ public class MainActivity extends AppCompatActivity {
 //                }
 
 //                new SimpleAlertController()
-//                                     .setTitle("Title标题")
-//                                     .setMessage("Message 信息")
-//                                     .setPositiveButtonTitle("确定")
-//                                     .setNegativeButtonTitle("取消")
-//                                     .show();
+//                        .setTitle("Title标题")
+//                        .setMessage("Message 信息")
+//                        .setPositiveButtonTitle("确定")
+//                        .setNegativeButtonTitle("取消")
+//                        .show(view);
+//                        .show(self);
+//                        .show();
             }
         });
 
         self.popupController = new PopupController(self, R.layout.test_view);
-        self.popupController.setPopupBackgroundColor(Color.BLUE);
-        self.popupController.setEdgePadding(50, 50, 50, 50);
+        self.popupController.setPopupBackgroundColor(Color.WHITE);
+        self.popupController.setEdgePadding(8, 8, 8, 8);
         self.popupController.setEdgeRoundedRadius(20);
-        self.popupController.setPopupShadowRadius(30);
+        self.popupController.setPopupShadowRadius(5);
         self.popupController.setDirectionArrowHeight(50);
 //        self.popupController.setAttachAnimationPerformer(new FadeInAnimationPerformer().setAnimationDirection(AnimationDirection.Left));
 //        self.popupController.setDetachAnimationPerformer(new FadeOutAnimationPerformer().setAnimationDirection(AnimationDirection.Right));

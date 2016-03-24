@@ -1,18 +1,20 @@
 package com.vilyever.popupcontroller.alert;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.vilyever.activityhelper.ActivityHelper;
+import com.vilyever.activityhelper.ActivityStateDelegate;
 import com.vilyever.contextholder.ContextHolder;
 import com.vilyever.popupcontroller.R;
 import com.vilyever.popupcontroller.popup.PopupController;
@@ -42,9 +44,52 @@ public class SimpleAlertController extends PopupController {
 
     /* Public Methods */
     /**
-     * 显示alert窗口
+     * 在当前状态为resumed的Activity显示alert窗口
+     * 调用此方法时，若app处于后台，则没有状态为resumed的Activity
+     * （或其它没有状态为resumed的Activity时的情况下），
+     * alert窗口将在下一次任意Activity状态变为resumed时显示
+     * @deprecated try to call {@link #show(View)} or {@link #show(Activity)} immediately
      */
+    @Deprecated
     public <T extends SimpleAlertController> T show() {
+        Activity resumedActivity = ActivityHelper.findResumedActivity();
+        if (resumedActivity != null) {
+            self.show(resumedActivity);
+        }
+        else {
+            ActivityHelper.registerActivityStateDelegate(new ActivityStateDelegate.SimpleActivityStateDelegate() {
+                @Override
+                public void onActivityResumed(Activity activity) {
+                    super.onActivityResumed(activity);
+
+                    self.show(activity);
+
+                    ActivityHelper.removeActivityStateDelegate(this);
+                }
+            });
+        }
+
+        return (T) this;
+    }
+
+    /**
+     * 在view所处的activity显示alert窗口
+     */
+    public <T extends SimpleAlertController> T show(View view) {
+        if (!(view.getContext() instanceof Activity)) {
+            Log.w(this.getClass().getSimpleName(), "the view is not attach to an activity");
+        }
+        else {
+            show((Activity) view.getContext());
+        }
+
+        return (T) this;
+    }
+
+    /**
+     * 在activity显示alert窗口
+     */
+    public <T extends SimpleAlertController> T show(Activity activity) {
         if (getNegativeButtonTitle() == null && getPositiveButtonTitle() == null) {
             setPositiveButtonTitle(Resource.getString(R.string.defaultAlertPositiveButtonTitle));
         }
@@ -60,31 +105,13 @@ public class SimpleAlertController extends PopupController {
             getSplitButtonView().setVisibility(View.VISIBLE);
         }
 
-        attachDecorFrameLayoutToWindow();
-        getDecorFrameLayout().post(new Runnable() {
-            @Override
-            public void run() {
-                popupInView(getDecorFrameLayout(), PopupDirection.Center);
-            }
-        });
+        popupInView(activity.getWindow().getDecorView(), PopupDirection.Center);
 
         return (T) this;
     }
 
 
     /* Properties */
-    /**
-     * 附加于window的根视图，用于展示alert
-     */
-    private FrameLayout decorFrameLayout;
-    protected FrameLayout getDecorFrameLayout() {
-        if (decorFrameLayout == null) {
-            decorFrameLayout = new FrameLayout(getContext());
-            decorFrameLayout.setVisibility(View.GONE);
-        }
-        return decorFrameLayout;
-    }
-
     /**
      * root视图，套上一层FrameLayout以便{@link #alertLinearLayout}能确定LayoutParams的类型
      */
@@ -361,8 +388,6 @@ public class SimpleAlertController extends PopupController {
     @Override
     protected void onPopupDismiss() {
         super.onPopupDismiss();
-
-        dettachDecorFrameLayoutToWindow();
     }
 
     /* Delegates */
@@ -400,29 +425,4 @@ public class SimpleAlertController extends PopupController {
         setPopupBackgroundColor(Resource.getColor(R.color.simpleAlertBackground));
         setEdgeRoundedRadius(Resource.getDimensionPixelSize(R.dimen.simpleAlertRoundedRadius));
     }
-
-    /**
-     * 添加layout到window，用于之后的弹窗
-     */
-    private void attachDecorFrameLayoutToWindow() {
-        if (getDecorFrameLayout().getParent() == null) {
-            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.packageName = getContext().getPackageName();
-            layoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
-
-            windowManager.addView(getDecorFrameLayout(), layoutParams);
-        }
-    }
-
-    /**
-     * 解离之前添加到window的layout，在alert消失时调用
-     */
-    private void dettachDecorFrameLayoutToWindow() {
-        if (getDecorFrameLayout().getParent() != null) {
-            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-            windowManager.removeView(getDecorFrameLayout());
-        }
-    }
-
 }

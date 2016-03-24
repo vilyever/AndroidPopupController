@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textStyle="bold"
-        android:text="ttttttttttttttttest"
+        android:text="Test PopupController"
         />
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textStyle="bold"
-        android:text="1sd1f\n2345\n6123\n546d\nf132"
+        android:text="this\nis\na\ndemo\n"
         />
 
 </LinearLayout>

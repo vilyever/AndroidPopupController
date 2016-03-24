@@ -37,7 +37,6 @@ public class ViewController {
     public ViewController(Context context, int layout) {
         // For generate LayoutParams
         FrameLayout wrapperFrameLayout = new FrameLayout(context);
-        View.inflate(context, layout, wrapperFrameLayout);
 
         View view = LayoutInflater.from(wrapperFrameLayout.getContext())
                                   .inflate(layout, wrapperFrameLayout, false);

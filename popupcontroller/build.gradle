@@ -23,6 +23,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
 
+    compile 'com.github.vilyever:AndroidActivityHelper:1.1.1'
     compile 'com.github.vilyever:AndroidResource:1.1.0'
 }
 

@@ -38,6 +38,9 @@ public class PopupController extends ViewController {
     }
     
     /* Public Methods */
+    public boolean isShowing() {
+        return getPopupWindow().isShowing();
+    }
 
     /** @see #popupFromView(View, PopupDirection, boolean, int, int)  */
     public <T extends PopupController> T popupFromView(@NonNull View anchorView, @NonNull PopupDirection popupDirection) {
@@ -58,7 +61,7 @@ public class PopupController extends ViewController {
      * @param offsetY Y轴偏移量
      */
     public <T extends PopupController> T popupFromView(@NonNull View anchorView, @NonNull PopupDirection popupDirection, boolean withArrow, int offsetX, int offsetY) {
-        if (!getPopupWindow().isShowing()) {
+        if (!isShowing()) {
 
             attachToParent(getPopupBackgroundView());
 
@@ -140,7 +143,7 @@ public class PopupController extends ViewController {
      * @param offsetY Y轴偏移量
      */
     public <T extends PopupController> T popupInView(@NonNull View anchorView, @NonNull PopupDirection popupDirection, int offsetX, int offsetY) {
-        if (!getPopupWindow().isShowing()) {
+        if (!isShowing()) {
 
             attachToParent(getPopupBackgroundView());
 
@@ -208,7 +211,7 @@ public class PopupController extends ViewController {
      * 消除popupWindow
      */
     public <T extends PopupController> T dismissPopup() {
-        if (getPopupWindow().isShowing()) {
+        if (isShowing()) {
             getPopupWindow().dismiss();
         }
 
