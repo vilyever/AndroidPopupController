@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.vilyever.popupcontroller.popup.PopupController;
@@ -16,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
     final MainActivity self = this;
     
     private PopupController popupController;
+    private PopupController popupController2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 //                        .show(view);
 //                        .show(self);
 //                        .show();
+
+//                self.draggingContainerController.addDraggingChild(self.popupController.getView());
             }
         });
 
@@ -61,27 +62,18 @@ public class MainActivity extends AppCompatActivity {
         self.popupController.setDirectionArrowHeight(50);
 //        self.popupController.setAttachAnimationPerformer(new FadeInAnimationPerformer().setAnimationDirection(AnimationDirection.Left));
 //        self.popupController.setDetachAnimationPerformer(new FadeOutAnimationPerformer().setAnimationDirection(AnimationDirection.Right));
+
+//        self.popupController.attachToParent((ViewGroup) findViewById(R.id.layout));
+
+//        draggingContainerController = new DraggingContainerController(this);
+//        draggingContainerController.getView().setBackgroundColor(Color.WHITE);
+//        draggingContainerController.attachToActivity(this);
+
+
+//        self.popupController2 = new PopupController(self, R.layout.test_view);
+//        self.popupController2.getView().setBackgroundColor(Color.GREEN);
+//        draggingContainerController.addDraggingChild(self.popupController2.getView(), new DraggingChildOptions().setAutoAttachNearestEdge(true).setAutoAttachNearestEdgeAnimated(true).setAutoAttachNearestEdgesSide(DraggingChildOptions.EdgeLeft));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    private DraggingContainerController draggingContainerController;
 }

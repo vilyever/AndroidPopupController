@@ -1,5 +1,6 @@
 package com.vilyever.popupcontroller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.CallSuper;
@@ -49,27 +50,57 @@ public class ViewController {
 
 
     /* Public Methods */
+    /** {@link #attachToActivity(Activity, boolean)} */
+    public <T extends ViewController> T attachToActivity(Activity activity) {
+        return attachToActivity(activity, false);
+    }
+
+    /**
+     * 添加当前controller的view到一个activity的根视图上
+     * @param activity
+     * @return
+     */
+    public <T extends ViewController> T attachToActivity(Activity activity, boolean keepMargin) {
+        return attachToParent((ViewGroup) activity.getWindow().getDecorView(), keepMargin);
+    }
+
+    /** {@link #attachToParent(ViewGroup, boolean)} */
+    public <T extends ViewController> T attachToParent(ViewGroup parent) {
+        return attachToParent(parent, false);
+    }
+
     /**
      * 添加当前controller的view到一个父view上
      * @param parent 父view
+     * @param keepMargin 若当前view的layoutParams有margin属性，是否保持不变
      */
-    public <T extends ViewController> T attachToParent(ViewGroup parent) {
+    public <T extends ViewController> T attachToParent(ViewGroup parent, boolean keepMargin) {
         if (getDetachAnimationPerformer() != null) {
             getDetachAnimationPerformer().onAnimationCancel(getView());
         }
 
         if (getView().getParent() != parent) {
+            ViewGroup.MarginLayoutParams preLayoutParams = null;
+            if (getView().getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                preLayoutParams = (ViewGroup.MarginLayoutParams) getView().getLayoutParams();
+            }
+
             detachFromParent();
 
             onViewWillAttachToParent(parent);
-            notifyOnViewWillAttachToParent(parent);
 
             parent.addView(getView());
+
+            if (keepMargin) {
+                if (preLayoutParams != null && getView().getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                    ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) getView().getLayoutParams();
+                    layoutParams.setMargins(preLayoutParams.leftMargin, preLayoutParams.topMargin, preLayoutParams.rightMargin, preLayoutParams.bottomMargin);
+                }
+            }
 
             setAttachedToParent(true);
 
             onViewAttachedToParent(parent);
-            notifyOnViewAttachedToParent(parent);
         }
 
         return (T) this;
@@ -99,10 +130,8 @@ public class ViewController {
             ViewGroup parent = (ViewGroup) getView().getParent();
 
             onViewWillDetachFromParent(parent);
-            notifyOnViewWillDetachFromParent(parent);
 
             onViewWillDisappear();
-            notifyOnViewWillDisappear();
 
             if (animated && getDetachAnimationPerformer() != null) {
                 getDetachAnimationPerformer().onAnimation(getView(), new OnAnimationStateChangeListener() {
@@ -124,7 +153,6 @@ public class ViewController {
                         setAttachedToParent(false);
 
                         onViewDetachedFromParent(parent);
-                        notifyOnViewDetachedFromParent(parent);
                     }
 
                     @Override
@@ -144,7 +172,6 @@ public class ViewController {
                 setAttachedToParent(false);
 
                 onViewDetachedFromParent(parent);
-                notifyOnViewDetachedFromParent(parent);
             }
         }
         return (T) this;
@@ -169,7 +196,7 @@ public class ViewController {
      * @param listener listener
      * @return this
      */
-    public ViewController addOnViewLayoutChangeListener(OnViewLayoutChangeListener listener) {
+    public ViewController registerOnViewLayoutChangeListener(OnViewLayoutChangeListener listener) {
         if (!getOnViewLayoutChangeListeners().contains(listener)) {
             getOnViewLayoutChangeListeners().add(listener);
         }
@@ -191,7 +218,7 @@ public class ViewController {
      * @param listener listener
      * @return this
      */
-    public ViewController addOnViewAttachStateChangeListener(OnViewAttachStateChangeListener listener) {
+    public ViewController registerOnViewAttachStateChangeListener(OnViewAttachStateChangeListener listener) {
         if (!getOnViewAttachStateChangeListeners().contains(listener)) {
             getOnViewAttachStateChangeListeners().add(listener);
         }
@@ -213,7 +240,7 @@ public class ViewController {
      * @param listener listener
      * @return this
      */
-    public ViewController addOnViewAppearStateChangeListener(OnViewAppearStateChangeListener listener) {
+    public ViewController registerOnViewAppearStateChangeListener(OnViewAppearStateChangeListener listener) {
         if (!getOnViewAppearStateChangeListeners().contains(listener)) {
             getOnViewAppearStateChangeListeners().add(listener);
         }
@@ -304,7 +331,6 @@ public class ViewController {
                     Rect oldFrame = new Rect(oldLeft, oldTop, oldRight, oldBottom);
 
                     onViewLayoutChange(frame, oldFrame);
-                    notifyOnViewLayoutChange(frame, oldFrame);
                 }
             };
         }
@@ -325,7 +351,6 @@ public class ViewController {
                     setAttachedToParent(true);
 
                     onViewWillAppear();
-                    notifyOnViewWillAppear();
 
                     if (getAttachAnimationPerformer() != null) {
                         getAttachAnimationPerformer().onAnimation(getView(), new OnAnimationStateChangeListener() {
@@ -342,7 +367,6 @@ public class ViewController {
 
                                 setAppeared(true);
                                 onViewAppeared();
-                                notifyOnViewAppeared();
                             }
 
                             @Override
@@ -358,7 +382,6 @@ public class ViewController {
                             public void run() {
                                 setAppeared(true);
                                 onViewAppeared();
-                                notifyOnViewAppeared();
                             }
                         });
                     }
@@ -368,7 +391,6 @@ public class ViewController {
                 public void onViewDetachedFromWindow(View v) {
                     setAppeared(false);
                     onViewDisappeared();
-                    notifyOnViewDisappeared();
                 }
             };
         }
@@ -482,7 +504,15 @@ public class ViewController {
      * @param frame 当前frame
      * @param oldFrame 改变前的frame
      */
+    @CallSuper
     protected void onViewLayoutChange(Rect frame, Rect oldFrame) {
+
+        ArrayList<OnViewLayoutChangeListener> copyList =
+                (ArrayList<OnViewLayoutChangeListener>)getOnViewLayoutChangeListeners().clone();
+        int size = copyList.size();
+        for (int i = 0; i < size; ++i) {
+            copyList.get(i).onViewLayoutChange(this, frame, oldFrame);
+        }
     }
 
     /**
@@ -490,7 +520,15 @@ public class ViewController {
      * 注意：【Attach、Detach】与【Appear、Disappear】无特定顺序关系
      * @param parent 将要添加到的parent
      */
+    @CallSuper
     protected void onViewWillAttachToParent(ViewGroup parent) {
+
+        ArrayList<OnViewAttachStateChangeListener> copyList =
+                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
+        int size = copyList.size();
+        for (int i = 0; i < size; ++i) {
+            copyList.get(i).onViewWillAttachToParent(this, parent);
+        }
     }
 
     /**
@@ -498,7 +536,15 @@ public class ViewController {
      * 注意：【Attach、Detach】与【Appear、Disappear】无特定顺序关系
      * @param parent 已经添加到的parent，即根视图{@link #view}当前的parent
      */
+    @CallSuper
     protected void onViewAttachedToParent(ViewGroup parent) {
+
+        ArrayList<OnViewAttachStateChangeListener> copyList =
+                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
+        int size = copyList.size();
+        for (int i = 0; i < size; ++i) {
+            copyList.get(i).onViewAttachedToParent(this, parent);
+        }
     }
 
     /**
@@ -515,6 +561,13 @@ public class ViewController {
             InputMethodManager imm = (InputMethodManager) getView().getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
         }
+
+        ArrayList<OnViewAttachStateChangeListener> copyList =
+                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
+        int size = copyList.size();
+        for (int i = 0; i < size; ++i) {
+            copyList.get(i).onViewWillDetachFromParent(this, parent);
+        }
     }
 
     /**
@@ -522,7 +575,15 @@ public class ViewController {
      * 注意：【Attach、Detach】与【Appear、Disappear】无特定顺序关系
      * @param parent 根视图{@link #view}先前的parent
      */
+    @CallSuper
     protected void onViewDetachedFromParent(ViewGroup parent) {
+
+        ArrayList<OnViewAttachStateChangeListener> copyList =
+                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
+        int size = copyList.size();
+        for (int i = 0; i < size; ++i) {
+            copyList.get(i).onViewDetachedFromParent(this, parent);
+        }
     }
 
     /**
@@ -531,7 +592,15 @@ public class ViewController {
      * 注意：此时根视图{@link #view}已经添加在了window下，只是还未计算宽高等参数
      * 注意：Appear与根视图{@link #view}的{@link View#setVisibility(int)}无关
      */
+    @CallSuper
     protected void onViewWillAppear() {
+
+        ArrayList<OnViewAppearStateChangeListener> copyList =
+                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
+        int size = copyList.size();
+        for (int i = 0; i < size; ++i) {
+            copyList.get(i).onViewWillAppear(this);
+        }
     }
 
     /**
@@ -542,15 +611,24 @@ public class ViewController {
      */
     @CallSuper
     protected void onViewAppeared() {
+
         if (!isAlreadyAppeared()) {
             setAlreadyAppeared(true);
             onViewFirstAppeared();
+        }
+
+        ArrayList<OnViewAppearStateChangeListener> copyList =
+                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
+        int size = copyList.size();
+        for (int i = 0; i < size; ++i) {
+            copyList.get(i).onViewAppeared(this);
         }
     }
 
     /**
      * 第一次显示到window上时的回调
      */
+    @CallSuper
     protected void onViewFirstAppeared() {
 
     }
@@ -560,7 +638,15 @@ public class ViewController {
      * 注意：【Attach、Detach】与【Appear、Disappear】无特定顺序关系
      * 注意：Disappear与根视图{@link #view}的{@link View#setVisibility(int)}无关
      */
+    @CallSuper
     protected void onViewWillDisappear() {
+
+        ArrayList<OnViewAppearStateChangeListener> copyList =
+                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
+        int size = copyList.size();
+        for (int i = 0; i < size; ++i) {
+            copyList.get(i).onViewWillDisappear(this);
+        }
     }
 
     /**
@@ -569,12 +655,21 @@ public class ViewController {
      * 若要处理类似WillDisappear时的事件，通常可以在{@link #onViewWillDetachFromParent(ViewGroup)}中完成
      * 注意：Disappear与根视图{@link #view}的{@link View#setVisibility(int)}无关
      */
+    @CallSuper
     protected void onViewDisappeared() {
+
+        ArrayList<OnViewAppearStateChangeListener> copyList =
+                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
+        int size = copyList.size();
+        for (int i = 0; i < size; ++i) {
+            copyList.get(i).onViewDisappeared(this);
+        }
     }
 
     /**
      * 根视图{@link #view}attach显示动画开始
      */
+    @CallSuper
     protected void onAttachAnimationStart() {
 
     }
@@ -582,6 +677,7 @@ public class ViewController {
     /**
      * 根视图{@link #view}attach显示动画结束
      */
+    @CallSuper
     protected void onAttachAnimationEnd() {
 
     }
@@ -589,6 +685,7 @@ public class ViewController {
     /**
      * 根视图{@link #view}attach显示动画取消
      */
+    @CallSuper
     protected void onAttachAnimationCancel() {
 
     }
@@ -596,6 +693,7 @@ public class ViewController {
     /**
      * 根视图{@link #view}detach显示动画开始
      */
+    @CallSuper
     protected void onDetachAnimationStart() {
 
     }
@@ -603,6 +701,7 @@ public class ViewController {
     /**
      * 根视图{@link #view}detach显示动画结束
      */
+    @CallSuper
     protected void onDetachAnimationEnd() {
 
     }
@@ -610,6 +709,7 @@ public class ViewController {
     /**
      * 根视图{@link #view}detach显示动画取消
      */
+    @CallSuper
     protected void onDetachAnimationCancel() {
 
     }
@@ -621,125 +721,8 @@ public class ViewController {
      * @return 控件实例
      */
     protected  <T extends View> T findViewById(int id) {
-        return (T)getView().findViewById(id);
+        return (T) getView().findViewById(id);
     }
 
     /* Private Methods */
-
-    /**
-     * 通知{@link #onViewLayoutChangeListeners}所有的listener根视图{@link #view}的layout改变
-     * {@link #onViewLayoutChange(Rect, Rect)}
-     */
-    private void notifyOnViewLayoutChange(Rect frame, Rect oldFrame) {
-        ArrayList<OnViewLayoutChangeListener> listenersCopy =
-                (ArrayList<OnViewLayoutChangeListener>)getOnViewLayoutChangeListeners().clone();
-        int numListeners = listenersCopy.size();
-        for (int i = 0; i < numListeners; ++i) {
-            listenersCopy.get(i).onViewLayoutChange(self, frame, oldFrame);
-        }
-    }
-
-    /**
-     * 通知{@link #onViewAttachStateChangeListeners}所有的listener根视图{@link #view}的attach状态改变
-     * {@link #onViewWillAttachToParent(ViewGroup)}
-     */
-    private void notifyOnViewWillAttachToParent(ViewGroup parent) {
-        ArrayList<OnViewAttachStateChangeListener> listenersCopy =
-                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
-        int numListeners = listenersCopy.size();
-        for (int i = 0; i < numListeners; ++i) {
-            listenersCopy.get(i).onViewWillAttachToParent(self, parent);
-        }
-    }
-
-    /**
-     * 通知{@link #onViewAttachStateChangeListeners}所有的listener根视图{@link #view}的attach状态改变
-     * {@link #onViewAttachedToParent(ViewGroup)}
-     */
-    private void notifyOnViewAttachedToParent(ViewGroup parent) {
-        ArrayList<OnViewAttachStateChangeListener> listenersCopy =
-                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
-        int numListeners = listenersCopy.size();
-        for (int i = 0; i < numListeners; ++i) {
-            listenersCopy.get(i).onViewAttachedToParent(self, parent);
-        }
-    }
-
-    /**
-     * 通知{@link #onViewAttachStateChangeListeners}所有的listener根视图{@link #view}的attach状态改变
-     * {@link #onViewWillDetachFromParent(ViewGroup)}
-     */
-    private void notifyOnViewWillDetachFromParent(ViewGroup parent) {
-        ArrayList<OnViewAttachStateChangeListener> listenersCopy =
-                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
-        int numListeners = listenersCopy.size();
-        for (int i = 0; i < numListeners; ++i) {
-            listenersCopy.get(i).onViewWillDetachFromParent(self, parent);
-        }
-    }
-
-    /**
-     * 通知{@link #onViewAttachStateChangeListeners}所有的listener根视图{@link #view}的attach状态改变
-     * {@link #onViewDetachedFromParent(ViewGroup)}
-     */
-    private void notifyOnViewDetachedFromParent(ViewGroup parent) {
-        ArrayList<OnViewAttachStateChangeListener> listenersCopy =
-                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
-        int numListeners = listenersCopy.size();
-        for (int i = 0; i < numListeners; ++i) {
-            listenersCopy.get(i).onViewDetachedFromParent(self, parent);
-        }
-    }
-
-    /**
-     * 通知{@link #onViewAppearStateChangeListeners}所有的listener根视图{@link #view}的appear状态改变
-     * {@link #onViewWillAppear()}
-     */
-    private void notifyOnViewWillAppear() {
-        ArrayList<OnViewAppearStateChangeListener> listenersCopy =
-                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
-        int numListeners = listenersCopy.size();
-        for (int i = 0; i < numListeners; ++i) {
-            listenersCopy.get(i).onViewWillAppear(self);
-        }
-    }
-
-    /**
-     * 通知{@link #onViewAppearStateChangeListeners}所有的listener根视图{@link #view}的appear状态改变
-     * {@link #onViewAppeared()}
-     */
-    private void notifyOnViewAppeared() {
-        ArrayList<OnViewAppearStateChangeListener> listenersCopy =
-                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
-        int numListeners = listenersCopy.size();
-        for (int i = 0; i < numListeners; ++i) {
-            listenersCopy.get(i).onViewAppeared(self);
-        }
-    }
-
-    /**
-     * 通知{@link #onViewAppearStateChangeListeners}所有的listener根视图{@link #view}的appear状态改变
-     * {@link #onViewWillDisappear()} ()}
-     */
-    private void notifyOnViewWillDisappear() {
-        ArrayList<OnViewAppearStateChangeListener> listenersCopy =
-                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
-        int numListeners = listenersCopy.size();
-        for (int i = 0; i < numListeners; ++i) {
-            listenersCopy.get(i).onViewWillDisappear(self);
-        }
-    }
-
-    /**
-     * 通知{@link #onViewAppearStateChangeListeners}所有的listener根视图{@link #view}的appear状态改变
-     * {@link #onViewDisappeared()}
-     */
-    private void notifyOnViewDisappeared() {
-        ArrayList<OnViewAppearStateChangeListener> listenersCopy =
-                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
-        int numListeners = listenersCopy.size();
-        for (int i = 0; i < numListeners; ++i) {
-            listenersCopy.get(i).onViewDisappeared(self);
-        }
-    }
 }

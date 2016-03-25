@@ -116,10 +116,6 @@ public class SimpleAlertController extends PopupController {
      * root视图，套上一层FrameLayout以便{@link #alertLinearLayout}能确定LayoutParams的类型
      */
     private FrameLayout rootFrameLayout;
-    private SimpleAlertController setRootFrameLayout(FrameLayout rootFrameLayout) {
-        this.rootFrameLayout = rootFrameLayout;
-        return this;
-    }
     private FrameLayout getRootFrameLayout() {
         if (rootFrameLayout == null) {
             rootFrameLayout = new FrameLayout(getContext());
@@ -132,10 +128,6 @@ public class SimpleAlertController extends PopupController {
      * 包含alert所有内容的视图
      */
     private LinearLayout alertLinearLayout;
-    private SimpleAlertController setAlertLinearLayout(LinearLayout alertLinearLayout) {
-        this.alertLinearLayout = alertLinearLayout;
-        return this;
-    }
     public LinearLayout getAlertLinearLayout() {
         if (alertLinearLayout == null) {
             alertLinearLayout = new LinearLayout(getContext());
@@ -149,10 +141,6 @@ public class SimpleAlertController extends PopupController {
      * 标题栏
      */
     private TextView titleLabel;
-    private SimpleAlertController setTitleLabel(TextView titleLabel) {
-        this.titleLabel = titleLabel;
-        return this;
-    }
     public TextView getTitleLabel() {
         if (titleLabel == null) {
             titleLabel = new TextView(getContext());
@@ -171,10 +159,6 @@ public class SimpleAlertController extends PopupController {
      * 信息栏
      */
     private TextView messageLabel;
-    private SimpleAlertController setMessageLabel(TextView messageLabel) {
-        this.messageLabel = messageLabel;
-        return this;
-    }
     public TextView getMessageLabel() {
         if (messageLabel == null) {
             messageLabel = new TextView(getContext());
@@ -194,10 +178,6 @@ public class SimpleAlertController extends PopupController {
      * 分割标题信息与button的分割线
      */
     private View splitVerticalView;
-    private SimpleAlertController setSplitVerticalView(View splitVerticalView) {
-        this.splitVerticalView = splitVerticalView;
-        return this;
-    }
     public View getSplitVerticalView() {
         if (splitVerticalView == null) {
             splitVerticalView = new View(getContext());
@@ -208,10 +188,6 @@ public class SimpleAlertController extends PopupController {
     }
 
     private LinearLayout buttonLayout;
-    private SimpleAlertController setButtonLayout(LinearLayout buttonLayout) {
-        this.buttonLayout = buttonLayout;
-        return this;
-    }
     public LinearLayout getButtonLayout() {
         if (buttonLayout == null) {
             buttonLayout = new LinearLayout(getContext());
@@ -225,10 +201,6 @@ public class SimpleAlertController extends PopupController {
      * 按钮分割线
      */
     private View splitButtonView;
-    private SimpleAlertController setSplitButtonView(View splitButtonView) {
-        this.splitButtonView = splitButtonView;
-        return this;
-    }
     public View getSplitButtonView() {
         if (splitButtonView == null) {
             splitButtonView = new View(getContext());
@@ -242,10 +214,6 @@ public class SimpleAlertController extends PopupController {
      * 左侧取消button
      */
     private Button negativeButton;
-    private SimpleAlertController setNegativeButton(Button negativeButton) {
-        this.negativeButton = negativeButton;
-        return this;
-    }
     public Button getNegativeButton() {
         if (negativeButton == null) {
             negativeButton = new Button(getContext());
@@ -265,10 +233,6 @@ public class SimpleAlertController extends PopupController {
      * 右侧确定button
      */
     private Button positiveButton;
-    private SimpleAlertController setPositiveButton(Button positiveButton) {
-        this.positiveButton = positiveButton;
-        return this;
-    }
     public Button getPositiveButton() {
         if (positiveButton == null) {
             positiveButton = new Button(getContext());
