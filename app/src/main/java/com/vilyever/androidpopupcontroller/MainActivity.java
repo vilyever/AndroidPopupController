@@ -57,6 +57,11 @@ public class MainActivity extends AppCompatActivity {
 
         new DraggingManager(fab) {
             @Override
+            protected boolean shouldStartDraggingOnTouchDown() {
+                return true;
+            }
+
+            @Override
             protected void onDraggingEnd(View draggingView) {
                 animateBackToOriginalCoordinateBeforeEndDragging();
             }

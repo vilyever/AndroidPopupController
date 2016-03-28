@@ -79,6 +79,8 @@ public class DraggingManager {
     public void endDragging() {
         self.getDraggingContainerController().detachFromParent();
         self.getDraggingContainerController().removeDraggingChild(self.getDraggingView());
+
+        setEnding(false);
     }
 
     
@@ -133,7 +135,7 @@ public class DraggingManager {
                     if (event.getAction() == MotionEvent.ACTION_UP
                             || event.getAction() == MotionEvent.ACTION_CANCEL) {
                         self.setDragging(false);
-                        self.getDraggingContainerController().setEnabled(false);
+                        self.setEnding(true);
                         self.onDraggingEnd(self.getDraggingView());
                     }
 
@@ -253,7 +255,17 @@ public class DraggingManager {
         return this;
     }
     public boolean isEnabled() {
-        return this.enabled;
+        return this.enabled && !isEnding();
+    }
+
+    private boolean ending;
+    protected DraggingManager setEnding(boolean ending) {
+        this.ending = ending;
+        getDraggingContainerController().setEnabled(!ending);
+        return this;
+    }
+    protected boolean isEnding() {
+        return this.ending;
     }
 
     /* Overrides */
