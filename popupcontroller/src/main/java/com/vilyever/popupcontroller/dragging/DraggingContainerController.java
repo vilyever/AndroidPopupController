@@ -189,6 +189,18 @@ public class DraggingContainerController extends ViewController {
     }
 
     /**
+     * 启用或禁用
+     */
+    private boolean enabled = true;
+    public DraggingContainerController setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        return this;
+    }
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    /**
      * 每个child的OnChildTouchListener
      * 若child原先持有OnChildTouchListener将会被替换
      */
@@ -216,6 +228,10 @@ public class DraggingContainerController extends ViewController {
 
                         if (!handled) {
                             v.onTouchEvent(e);
+                        }
+
+                        if (!self.isEnabled()) {
+                            return handled;
                         }
                     }
 

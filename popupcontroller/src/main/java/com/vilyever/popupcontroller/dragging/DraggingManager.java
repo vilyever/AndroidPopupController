@@ -91,6 +91,15 @@ public class DraggingManager {
         return this.targetView;
     }
 
+    private View.OnTouchListener originalOnTouchListener;
+    public DraggingManager setOriginalOnTouchListener(View.OnTouchListener originalOnTouchListener) {
+        this.originalOnTouchListener = originalOnTouchListener;
+        return this;
+    }
+    public View.OnTouchListener getOriginalOnTouchListener() {
+        return this.originalOnTouchListener;
+    }
+
     /**
      * 配合{@link DraggingContainerController}的触摸监听实现无缝衔接拖动
      */
@@ -100,8 +109,19 @@ public class DraggingManager {
             this.targetViewOnTouchListener = new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if (!self.isEnabled()) {
-                        return false;
+                    if (!self.isDragging()) {
+                        boolean handled = false;
+                        if (self.getOriginalOnTouchListener() != null) {
+                            handled = self.getOriginalOnTouchListener().onTouch(v, event);
+                        }
+
+                        if (!handled) {
+                            v.onTouchEvent(event);
+                        }
+
+                        if (!self.isEnabled()) {
+                            return handled;
+                        }
                     }
 
                     self.getGestureDetector().onTouchEvent(event);
@@ -113,6 +133,7 @@ public class DraggingManager {
                     if (event.getAction() == MotionEvent.ACTION_UP
                             || event.getAction() == MotionEvent.ACTION_CANCEL) {
                         self.setDragging(false);
+                        self.getDraggingContainerController().setEnabled(false);
                         self.onDraggingEnd(self.getDraggingView());
                     }
 
@@ -321,6 +342,7 @@ public class DraggingManager {
         getDraggingView().setX(targetViewX);
         getDraggingView().setY(targetViewY);
 
+        getDraggingContainerController().setEnabled(true);
         onDraggingBegin(getDraggingView());
     }
 
