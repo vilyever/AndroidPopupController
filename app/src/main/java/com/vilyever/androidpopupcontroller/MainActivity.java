@@ -74,6 +74,4 @@ public class MainActivity extends AppCompatActivity {
 //        self.popupController2.getView().setBackgroundColor(Color.GREEN);
 //        draggingContainerController.addDraggingChild(self.popupController2.getView(), new DraggingChildOptions().setAutoAttachNearestEdge(true).setAutoAttachNearestEdgeAnimated(true).setAutoAttachNearestEdgesSide(DraggingChildOptions.EdgeLeft));
     }
-
-//    private DraggingContainerController draggingContainerController;
 }

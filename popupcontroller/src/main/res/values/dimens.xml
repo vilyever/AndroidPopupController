@@ -14,4 +14,5 @@
     <dimen name="simpleAlertButtonTitleSize">20sp</dimen>
     <dimen name="simpleAlertSplitLine">1dp</dimen>
     <dimen name="controllerAnimationDirectionMoveDistance">60dp</dimen>
+    <dimen name="draggingManagerStartDraggingOffset">16dp</dimen>
 </resources>

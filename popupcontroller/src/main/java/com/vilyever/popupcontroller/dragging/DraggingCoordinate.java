@@ -31,8 +31,11 @@ public class DraggingCoordinate {
     
     
     /* Overrides */
-     
-     
+
+    @Override
+    public String toString() {
+        return super.toString() + ": (" + this.x + ", " + this.y + ")";
+    }
     /* Delegates */
      
      

@@ -50,6 +50,27 @@ public class ViewController {
 
 
     /* Public Methods */
+
+    /**
+     * 当前{@link #view}的context是否是Activity
+     * @return
+     */
+    public boolean checkContextIsActivity() {
+        return getContext() instanceof Activity;
+    }
+
+    /**
+     * 若当前{@link #view}的context是Activity，返回此Activity，否则返回null
+     * @return
+     */
+    public Activity getActivity() {
+        if (checkContextIsActivity()) {
+            return (Activity) getContext();
+        }
+
+        return null;
+    }
+
     /** {@link #attachToActivity(Activity, boolean)} */
     public <T extends ViewController> T attachToActivity(Activity activity) {
         return attachToActivity(activity, false);

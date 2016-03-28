@@ -1,6 +1,7 @@
 package com.vilyever.popupcontroller.dragging;
 
 import android.support.annotation.IntDef;
+import android.view.View;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -32,6 +33,10 @@ public class DraggingChildOptions {
             })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AttachEdge {}
+    public static boolean checkAttachEdge(int edges, @AttachEdge int edge) {
+        int singleEdge = edge;
+        return (edges & singleEdge) == singleEdge;
+    }
     
     /* Constructors */
     
@@ -91,7 +96,7 @@ public class DraggingChildOptions {
      * 若某个edge没有被设置，即使它离child最近也不粘附它
      * 默认全边缘
      */
-    private @AttachEdge int autoAttachNearestEdgesSide = EdgeAll;
+    private int autoAttachNearestEdgesSide = EdgeAll;
     public DraggingChildOptions setAutoAttachNearestEdgesSide(@AttachEdge int... autoAttachNearestEdgesSide) {
         if (autoAttachNearestEdgesSide.length > 0) {
             this.autoAttachNearestEdgesSide = autoAttachNearestEdgesSide[0];
@@ -104,7 +109,7 @@ public class DraggingChildOptions {
         }
         return this; 
     }
-    public @AttachEdge int getAutoAttachNearestEdgesSide() {
+    public int getAutoAttachNearestEdgesSide() {
         return this.autoAttachNearestEdgesSide;
     }
 
@@ -130,6 +135,20 @@ public class DraggingChildOptions {
     }
     public DraggingCoordinate getOriginalWindowCoordinate() {
         return this.originalWindowCoordinate;
+    }
+
+    /**
+     * 原始OnTouchListener
+     * 调用{@link DraggingContainerController#addDraggingChild(View, DraggingChildOptions)}后，child的OnTouchListener将被替换
+     * 若需要回调原始的OnTouchListener可设置此值
+     */
+    private View.OnTouchListener originalOnTouchListener;
+    public DraggingChildOptions setOriginalOnTouchListener(View.OnTouchListener originalOnTouchListener) {
+        this.originalOnTouchListener = originalOnTouchListener;
+        return this;
+    }
+    public View.OnTouchListener getOriginalOnTouchListener() {
+        return this.originalOnTouchListener;
     }
     
     /* Overrides */
