@@ -219,6 +219,10 @@ public class DraggingContainerController extends ViewController {
 
                 @Override
                 public boolean onTouch(View v, MotionEvent e) {
+                    if (v.getParent() != self.getRootFrameLayout()) {
+                        return v.onTouchEvent(e);
+                    }
+
                     if (!this.dragging) {
                         boolean handled = false;
                         View.OnTouchListener originalOnTouchListener = self.getChildOptions(v).getOriginalOnTouchListener();
@@ -367,7 +371,7 @@ public class DraggingContainerController extends ViewController {
      */
     @NonNull
     protected DraggingCoordinate internalMoveChild(View child, float distanceX, float distanceY) {
-        child.animate().cancel();
+//        child.animate().cancel();
 
         int x = (int) Math.floor(child.getX() + distanceX);
         int y = (int) Math.floor(child.getY() + distanceY);
@@ -392,7 +396,7 @@ public class DraggingContainerController extends ViewController {
      * @param distanceY y轴距离，上负下正
      */
     protected void internalMoveChildAnimated(View child, float distanceX, float distanceY) {
-        child.animate().cancel();
+//        child.animate().cancel();
 
         int x = (int) Math.floor(child.getX() + distanceX);
         int y = (int) Math.floor(child.getY() + distanceY);
@@ -455,7 +459,7 @@ public class DraggingContainerController extends ViewController {
      * @param animated 是否显示动画
      */
     protected void internalCalibrateChildToOriginalWindowCoordinate(View child, boolean animated) {
-        child.animate().cancel();
+//        child.animate().cancel();
 
         DraggingCoordinate coordinate = getChildOptions(child).getOriginalWindowCoordinate();
 

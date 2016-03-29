@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.vilyever.popupcontroller.dragging.DraggingManager;
 import com.vilyever.popupcontroller.popup.PopupController;
 import com.vilyever.popupcontroller.popup.PopupDirection;
 
@@ -55,17 +54,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        new DraggingManager(fab) {
-            @Override
-            protected boolean shouldStartDraggingOnTouchDown() {
-                return true;
-            }
-
-            @Override
-            protected void onDraggingEnd(View draggingView) {
-                animateBackToOriginalCoordinateBeforeEndDragging();
-            }
-        };
+//        new DraggingManager(fab) {
+//            @Override
+//            protected void onDraggingBegin(View draggingView) {
+////                super.onDraggingBegin(draggingView);
+//                draggingView.animate().scaleX(2.0f).scaleY(2.0f).start();
+//
+//            }
+//
+//            @Override
+//            protected void onDraggingEnd(View draggingView) {
+//                animateBackToOriginalCoordinateBeforeEndDragging();
+//            }
+//        };
 
         self.popupController = new PopupController(self, R.layout.test_view);
         self.popupController.setPopupBackgroundColor(Color.WHITE);

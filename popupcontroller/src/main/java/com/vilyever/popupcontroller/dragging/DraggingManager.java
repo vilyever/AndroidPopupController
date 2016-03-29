@@ -47,7 +47,7 @@ public class DraggingManager {
         int targetViewX = targetLocation[0];
         int targetViewY = targetLocation[1];
 
-        getDraggingView().animate().x(targetViewX).y(targetViewY).start();
+        getDraggingView().animate().x(targetViewX).y(targetViewY).scaleX(1.0f).scaleY(1.0f).start();
         getDraggingView().animate().setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -76,11 +76,13 @@ public class DraggingManager {
      * 回收拖动容器和视图
      * 请确保每次{@link #onDraggingEnd(View)}都会调用此方法，可同步调用，或执行动画或某些后台操作后调用
      */
-    public void endDragging() {
-        self.getDraggingContainerController().detachFromParent();
-        self.getDraggingContainerController().removeDraggingChild(self.getDraggingView());
+    public final void endDragging() {
+        if (isEnding()) {
+            getDraggingContainerController().removeDraggingChild(getDraggingView());
+            getDraggingContainerController().detachFromParent(false);
 
-        setEnding(false);
+            setEnding(false);
+        }
     }
 
     
@@ -363,6 +365,8 @@ public class DraggingManager {
         public CopyView(View originalView) {
             super(originalView.getContext());
             this.originalView = originalView;
+
+            setLayoutParams(new ViewGroup.LayoutParams(this.originalView.getWidth(), this.originalView.getHeight()));
         }
 
         private final View originalView;
