@@ -5,13 +5,13 @@ import android.view.ViewGroup;
 import com.vilyever.popupcontroller.ViewController;
 
 /**
- * OnViewAttachStateChangeListener
+ * OnViewStateChangeListener
  * AndroidPopupController <com.vilyever.popupcontroller>
  * Created by vilyever on 2016/3/2.
  * Feature:
  * {@link ViewController}根视图的parent变动监听
  */
-public interface OnViewAttachStateChangeListener {
+public interface OnViewStateChangeListener {
     /**
      * {@link ViewController#onViewWillAttachToParent(ViewGroup)}
      * @param controller controller
@@ -39,4 +39,28 @@ public interface OnViewAttachStateChangeListener {
      * @param parent 将controller根视图移除的parent
      */
     void onViewDetachedFromParent(ViewController controller, ViewGroup parent);
+
+    /**
+     * {@link ViewController#onViewWillAppear()}
+     * @param controller controller
+     */
+    void onViewWillAppear(ViewController controller);
+
+    /**
+     * {@link ViewController#onViewAppeared()}
+     * @param controller controller
+     */
+    void onViewAppeared(ViewController controller);
+
+    /**
+     * {@link ViewController#onViewWillDisappear()} ()}
+     * @param controller controller
+     */
+    void onViewWillDisappear(ViewController controller);
+
+    /**
+     * {@link ViewController#onViewDisappeared()}
+     * @param controller controller
+     */
+    void onViewDisappeared(ViewController controller);
 }

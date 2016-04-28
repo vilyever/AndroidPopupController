@@ -181,11 +181,11 @@ public class DraggingContainerController extends ViewController {
      */
     private FrameLayout rootFrameLayout;
     private FrameLayout getRootFrameLayout() {
-        if (rootFrameLayout == null) {
-            rootFrameLayout = new FrameLayout(getContext());
-            rootFrameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        if (this.rootFrameLayout == null) {
+            this.rootFrameLayout = new FrameLayout(getContext());
+            this.rootFrameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
-        return rootFrameLayout;
+        return this.rootFrameLayout;
     }
 
     /**
@@ -225,7 +225,7 @@ public class DraggingContainerController extends ViewController {
 
                     if (!this.dragging) {
                         boolean handled = false;
-                        View.OnTouchListener originalOnTouchListener = self.getChildOptions(v).getOriginalOnTouchListener();
+                        View.OnTouchListener originalOnTouchListener = self.getChildOptions(v) == null ? null : self.getChildOptions(v).getOriginalOnTouchListener();
                         if (originalOnTouchListener != null) {
                             handled = originalOnTouchListener.onTouch(v, e);
                         }
@@ -260,20 +260,16 @@ public class DraggingContainerController extends ViewController {
 
                                 int touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
-                                if (Math.abs(dx) > touchSlop) {
-                                    this.lastTouchX = this.initialTouchX + touchSlop * (dx < 0 ? -1 : 1);
-                                    this.dragging = true;
-                                }
-                                else if (Math.abs(dy) > touchSlop) {
-                                    this.lastTouchY = this.initialTouchY + touchSlop * (dy < 0 ? -1 : 1);
-                                    this.dragging = true;
-                                }
+                                this.dragging = (Math.abs(dx) > touchSlop) || (Math.abs(dy) > touchSlop);
 
                                 if (this.dragging) {
                                     final int oldAction = e.getAction();
                                     e.setAction(MotionEvent.ACTION_CANCEL);
                                     v.onTouchEvent(e);
                                     e.setAction(oldAction);
+
+                                    this.lastTouchX = x;
+                                    this.lastTouchY = y;
 
                                     self.onChildBeginDragging(v);
                                 }

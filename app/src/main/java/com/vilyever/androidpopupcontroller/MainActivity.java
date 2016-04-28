@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.vilyever.popupcontroller.popup.PopupController;
-import com.vilyever.popupcontroller.popup.PopupDirection;
 
 public class MainActivity extends AppCompatActivity {
     final MainActivity self = this;
@@ -31,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 
 
-                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Up, true);
+//                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Up, true);
+
 //                self.popupController.popupInView(self.getWindow().getDecorView(), PopupDirection.Center);
 
 //                if (!self.popupController.isAppeared()) {
@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
 //                        .show();
 
 //                self.draggingContainerController.addDraggingChild(self.popupController.getView());
+
+//                HudController hudController = new HudController();
+//                hudController.getTitleLabel().setText("__haha there's a happly live1 123456789 123456789abcdefg fijklmg 123456789 123456789 123456789 123456789 123456789");
+//                hudController.show();
             }
         });
 
@@ -87,5 +91,6 @@ public class MainActivity extends AppCompatActivity {
 //        self.popupController2 = new PopupController(self, R.layout.test_view);
 //        self.popupController2.getView().setBackgroundColor(Color.GREEN);
 //        draggingContainerController.addDraggingChild(self.popupController2.getView(), new DraggingChildOptions().setAutoAttachNearestEdge(true).setAutoAttachNearestEdgeAnimated(true).setAutoAttachNearestEdgesSide(DraggingChildOptions.EdgeLeft));
+
     }
 }

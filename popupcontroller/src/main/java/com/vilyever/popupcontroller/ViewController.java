@@ -1,10 +1,12 @@
 package com.vilyever.popupcontroller;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +15,9 @@ import android.widget.FrameLayout;
 
 import com.vilyever.popupcontroller.animation.AnimationPerformer;
 import com.vilyever.popupcontroller.animation.OnAnimationStateChangeListener;
-import com.vilyever.popupcontroller.listener.OnViewAppearStateChangeListener;
-import com.vilyever.popupcontroller.listener.OnViewAttachStateChangeListener;
+import com.vilyever.popupcontroller.listener.OnViewStateChangeListener;
 import com.vilyever.popupcontroller.listener.OnViewLayoutChangeListener;
+import com.vilyever.popupcontroller.util.StateFlow;
 
 import java.util.ArrayList;
 
@@ -48,9 +50,18 @@ public class ViewController {
         setView(view);
     }
 
+    public static ViewController fromActivity(Activity activity) {
+        return new ViewController(activity.findViewById(android.R.id.content));
+    }
+
+    public static ViewController fromFragment(Fragment fragment) {
+        if (fragment.getView() == null) {
+            throw new IllegalStateException("onCreateView is not call in fragment");
+        }
+        return new ViewController(fragment.getView());
+    }
 
     /* Public Methods */
-
     /**
      * 当前{@link #view}的context是否是Activity
      * @return
@@ -85,6 +96,14 @@ public class ViewController {
         return attachToParent((ViewGroup) activity.getWindow().getDecorView(), keepMargin);
     }
 
+    public <T extends ViewController> T attachToActivity(Activity activity, int parentLayoutID) {
+        return attachToActivity(activity, parentLayoutID, false);
+    }
+
+    public <T extends ViewController> T attachToActivity(Activity activity, int parentLayoutID, boolean keepMargin) {
+        return attachToParent((ViewGroup) activity.findViewById(parentLayoutID), keepMargin);
+    }
+
     /** {@link #attachToParent(ViewGroup, boolean)} */
     public <T extends ViewController> T attachToParent(ViewGroup parent) {
         return attachToParent(parent, false);
@@ -108,7 +127,7 @@ public class ViewController {
 
             detachFromParent();
 
-            onViewWillAttachToParent(parent);
+            internalAttemptToChangeStateFlow(StateFlow.State.WillAttach, true, parent);
 
             parent.addView(getView());
 
@@ -119,9 +138,7 @@ public class ViewController {
                 }
             }
 
-            setAttachedToParent(true);
-
-            onViewAttachedToParent(parent);
+            internalAttemptToChangeStateFlow(StateFlow.State.Attached, true, parent);
         }
 
         return (T) this;
@@ -150,36 +167,32 @@ public class ViewController {
         if (getView().getParent() != null) {
             ViewGroup parent = (ViewGroup) getView().getParent();
 
-            onViewWillDetachFromParent(parent);
-
-            onViewWillDisappear();
+            internalAttemptToChangeStateFlow(StateFlow.State.WillDetach, false, parent);
 
             if (animated && getDetachAnimationPerformer() != null) {
                 getDetachAnimationPerformer().onAnimation(getView(), new OnAnimationStateChangeListener() {
                     @Override
                     public void onAnimationStart() {
-                        setDisappearing(true);
-                        onDetachAnimationStart();
+                        self.setDisappearing(true);
+                        self.onDetachAnimationStart();
+                        self.internalAttemptToChangeStateFlow(StateFlow.State.WillDisappear, false, null);
                     }
 
                     @Override
                     public void onAnimationEnd() {
-                        setDisappearing(false);
-                        onDetachAnimationEnd();
+                        self.setDisappearing(false);
+                        self.onDetachAnimationEnd();
 
                         ViewGroup parent = (ViewGroup) getView().getParent();
-
                         parent.removeView(getView());
 
-                        setAttachedToParent(false);
-
-                        onViewDetachedFromParent(parent);
+                        self.internalAttemptToChangeStateFlow(StateFlow.State.Detached, false, parent);
                     }
 
                     @Override
                     public void onAnimationCancel() {
-                        setDisappearing(false);
-                        onDetachAnimationCancel();
+                        self.setDisappearing(false);
+                        self.onDetachAnimationCancel();
                     }
                 });
             }
@@ -190,9 +203,7 @@ public class ViewController {
 
                 parent.removeView(getView());
 
-                setAttachedToParent(false);
-
-                onViewDetachedFromParent(parent);
+                internalAttemptToChangeStateFlow(StateFlow.State.Detached, false, parent);
             }
         }
         return (T) this;
@@ -203,13 +214,26 @@ public class ViewController {
      * @param controller 被替代的controller
      */
     public void replaceController(@NonNull ViewController controller) {
-        if (controller.isAttachedToParent()) {
-            if (controller.getView().getParent() instanceof ViewGroup) {
-                ViewGroup parent = (ViewGroup) controller.getView().getParent();
-                parent.removeView(controller.getView());
-                attachToParent(parent);
-            }
+        if (controller.isAttachedToParent() && controller.getView().getParent() instanceof ViewGroup) {
+            ViewGroup parent = (ViewGroup) controller.getView().getParent();
+            parent.removeView(controller.getView());
+            attachToParent(parent);
         }
+    }
+
+    /**
+     * 是否添加到了某个parent上
+     */
+    public boolean isAttachedToParent() {
+        return getStateFlow().getState() == StateFlow.State.Attached;
+    }
+
+    /**
+     * 是否显示在window上
+     * 注意：true表明此时根视图{@link #view}的宽高等参数已经计算完成
+     */
+    public boolean isAppeared() {
+        return getStateFlow().getState() == StateFlow.State.Appeared;
     }
 
     /**
@@ -239,9 +263,9 @@ public class ViewController {
      * @param listener listener
      * @return this
      */
-    public ViewController registerOnViewAttachStateChangeListener(OnViewAttachStateChangeListener listener) {
-        if (!getOnViewAttachStateChangeListeners().contains(listener)) {
-            getOnViewAttachStateChangeListeners().add(listener);
+    public ViewController registerOnViewAttachStateChangeListener(OnViewStateChangeListener listener) {
+        if (!getOnViewStateChangeListeners().contains(listener)) {
+            getOnViewStateChangeListeners().add(listener);
         }
         return this;
     }
@@ -251,33 +275,10 @@ public class ViewController {
      * @param listener listener
      * @return this
      */
-    public ViewController removeOnViewAttachStateChangeListener(OnViewAttachStateChangeListener listener) {
-        getOnViewAttachStateChangeListeners().remove(listener);
+    public ViewController removeOnViewAttachStateChangeListener(OnViewStateChangeListener listener) {
+        getOnViewStateChangeListeners().remove(listener);
         return this;
     }
-
-    /**
-     * 添加根视图{@link #view}的appear state监听
-     * @param listener listener
-     * @return this
-     */
-    public ViewController registerOnViewAppearStateChangeListener(OnViewAppearStateChangeListener listener) {
-        if (!getOnViewAppearStateChangeListeners().contains(listener)) {
-            getOnViewAppearStateChangeListeners().add(listener);
-        }
-        return this;
-    }
-
-    /**
-     * 移除根视图{@link #view}的appear state监听
-     * @param listener listener
-     * @return this
-     */
-    public ViewController removeOnViewAppearStateChangeListener(OnViewAppearStateChangeListener listener) {
-        getOnViewAppearStateChangeListeners().remove(listener);
-        return this;
-    }
-
 
     /* Properties */
     private Context context;
@@ -286,7 +287,7 @@ public class ViewController {
         return (T) this;
     }
     public Context getContext() {
-        return context;
+        return this.context;
     }
 
     /**
@@ -303,15 +304,23 @@ public class ViewController {
         }
 
         this.view = view;
-        setContext(view.getContext());
+        setContext(this.view.getContext());
 
-        view.addOnLayoutChangeListener(getInternalOnLayoutChangeListener());
-        view.addOnAttachStateChangeListener(getInternalOnAttachStateChangeListener());
+        this.view.addOnLayoutChangeListener(getInternalOnLayoutChangeListener());
+        this.view.addOnAttachStateChangeListener(getInternalOnAttachStateChangeListener());
 
         return (T) this;
     }
     public View getView() {
-        return view;
+        return this.view;
+    }
+
+    private StateFlow stateFlow;
+    protected StateFlow getStateFlow() {
+        if (this.stateFlow == null) {
+            this.stateFlow = new StateFlow();
+        }
+        return this.stateFlow;
     }
 
     /**
@@ -323,7 +332,7 @@ public class ViewController {
         return this;
     }
     public AnimationPerformer getAttachAnimationPerformer() {
-        return attachAnimationPerformer;
+        return this.attachAnimationPerformer;
     }
 
     /**
@@ -335,7 +344,7 @@ public class ViewController {
         return this;
     }
     public AnimationPerformer getDetachAnimationPerformer() {
-        return detachAnimationPerformer;
+        return this.detachAnimationPerformer;
     }
 
     /**
@@ -344,18 +353,18 @@ public class ViewController {
      */
     private View.OnLayoutChangeListener internalOnLayoutChangeListener;
     private View.OnLayoutChangeListener getInternalOnLayoutChangeListener() {
-        if (internalOnLayoutChangeListener == null) {
-            internalOnLayoutChangeListener = new View.OnLayoutChangeListener() {
+        if (this.internalOnLayoutChangeListener == null) {
+            this.internalOnLayoutChangeListener = new View.OnLayoutChangeListener() {
                 @Override
                 public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                     Rect frame = new Rect(left, top, right, bottom);
                     Rect oldFrame = new Rect(oldLeft, oldTop, oldRight, oldBottom);
 
-                    onViewLayoutChange(frame, oldFrame);
+                    self.onViewLayoutChange(frame, oldFrame);
                 }
             };
         }
-        return internalOnLayoutChangeListener;
+        return this.internalOnLayoutChangeListener;
     }
 
     /**
@@ -364,45 +373,40 @@ public class ViewController {
      */
     private View.OnAttachStateChangeListener internalOnAttachStateChangeListener;
     protected View.OnAttachStateChangeListener getInternalOnAttachStateChangeListener() {
-        if (internalOnAttachStateChangeListener == null) {
-            internalOnAttachStateChangeListener = new View.OnAttachStateChangeListener() {
+        if (this.internalOnAttachStateChangeListener == null) {
+            this.internalOnAttachStateChangeListener = new View.OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View v) {
-                    // 由于不禁止从外部直接addChild，这种状况下将不会有关于attach的回调
-                    setAttachedToParent(true);
+                    self.internalAttemptToChangeStateFlow(StateFlow.State.WillAppear, true, (ViewGroup) self.getView().getParent());
 
-                    onViewWillAppear();
-
-                    if (getAttachAnimationPerformer() != null) {
-                        getAttachAnimationPerformer().onAnimation(getView(), new OnAnimationStateChangeListener() {
+                    if (self.getAttachAnimationPerformer() != null) {
+                        self.getAttachAnimationPerformer().onAnimation(self.getView(), new OnAnimationStateChangeListener() {
                             @Override
                             public void onAnimationStart() {
-                                setAppearing(true);
-                                onAttachAnimationStart();
+                                self.setAppearing(true);
+                                self.onAttachAnimationStart();
                             }
 
                             @Override
                             public void onAnimationEnd() {
-                                setAppearing(false);
-                                onAttachAnimationEnd();
+                                self.setAppearing(false);
+                                self.onAttachAnimationEnd();
 
-                                setAppeared(true);
-                                onViewAppeared();
+                                self.internalAttemptToChangeStateFlow(StateFlow.State.Appeared, true, (ViewGroup) self.getView().getParent());
                             }
 
                             @Override
                             public void onAnimationCancel() {
-                                setAppearing(false);
-                                onAttachAnimationCancel();
+                                self.setAppearing(false);
+                                self.onAttachAnimationCancel();
                             }
                         });
                     }
                     else {
-                        getView().post(new Runnable() {
+                        self.getView().post(new Runnable() {
                             @Override
                             public void run() {
-                                setAppeared(true);
-                                onViewAppeared();
+                                self.internalAttemptToChangeStateFlow(StateFlow.State.Appeared, true, (ViewGroup) self.getView().getParent());
                             }
                         });
                     }
@@ -410,12 +414,11 @@ public class ViewController {
 
                 @Override
                 public void onViewDetachedFromWindow(View v) {
-                    setAppeared(false);
-                    onViewDisappeared();
+                    self.internalAttemptToChangeStateFlow(StateFlow.State.Detached, false, (ViewGroup) self.getView().getParent());
                 }
             };
         }
-        return internalOnAttachStateChangeListener;
+        return this.internalOnAttachStateChangeListener;
     }
 
     /**
@@ -423,57 +426,21 @@ public class ViewController {
      */
     private ArrayList<OnViewLayoutChangeListener> onViewLayoutChangeListeners;
     protected ArrayList<OnViewLayoutChangeListener> getOnViewLayoutChangeListeners() {
-        if (onViewLayoutChangeListeners == null) {
-            onViewLayoutChangeListeners = new ArrayList<OnViewLayoutChangeListener>();
+        if (this.onViewLayoutChangeListeners == null) {
+            this.onViewLayoutChangeListeners = new ArrayList<OnViewLayoutChangeListener>();
         }
-        return onViewLayoutChangeListeners;
+        return this.onViewLayoutChangeListeners;
     }
 
     /**
      * OnViewAttachStateChangeListener合集
      */
-    private ArrayList<OnViewAttachStateChangeListener> onViewAttachStateChangeListeners;
-    protected ArrayList<OnViewAttachStateChangeListener> getOnViewAttachStateChangeListeners() {
-        if (onViewAttachStateChangeListeners == null) {
-            onViewAttachStateChangeListeners = new ArrayList<OnViewAttachStateChangeListener>();
+    private ArrayList<OnViewStateChangeListener> onViewStateChangeListeners;
+    protected ArrayList<OnViewStateChangeListener> getOnViewStateChangeListeners() {
+        if (this.onViewStateChangeListeners == null) {
+            this.onViewStateChangeListeners = new ArrayList<OnViewStateChangeListener>();
         }
-        return onViewAttachStateChangeListeners;
-    }
-
-    /**
-     * OnViewAppearStateChangeListener合集
-     */
-    private ArrayList<OnViewAppearStateChangeListener> onViewAppearStateChangeListeners;
-    protected ArrayList<OnViewAppearStateChangeListener> getOnViewAppearStateChangeListeners() {
-        if (onViewAppearStateChangeListeners == null) {
-            onViewAppearStateChangeListeners = new ArrayList<OnViewAppearStateChangeListener>();
-        }
-        return onViewAppearStateChangeListeners;
-    }
-
-    /**
-     * 是否添加到了某个parent上
-     */
-    private boolean attachedToParent;
-    protected ViewController setAttachedToParent(boolean attachedToParent) {
-        this.attachedToParent = attachedToParent;
-        return this;
-    }
-    public boolean isAttachedToParent() {
-        return attachedToParent;
-    }
-
-    /**
-     * 是否显示在window上
-     * 注意：true表明此时根视图{@link #view}的宽高等参数已经计算完成
-     */
-    private boolean appeared;
-    protected ViewController setAppeared(boolean appeared) {
-        this.appeared = appeared;
-        return this;
-    }
-    public boolean isAppeared() {
-        return appeared;
+        return this.onViewStateChangeListeners;
     }
 
     /**
@@ -485,7 +452,7 @@ public class ViewController {
         return this;
     }
     public boolean isAppearing() {
-        return appearing;
+        return this.appearing;
     }
 
     /**
@@ -497,7 +464,7 @@ public class ViewController {
         return this;
     }
     public boolean isDisappearing() {
-        return disappearing;
+        return this.disappearing;
     }
 
     /**
@@ -543,13 +510,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onViewWillAttachToParent(ViewGroup parent) {
-
-        ArrayList<OnViewAttachStateChangeListener> copyList =
-                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
-        int size = copyList.size();
-        for (int i = 0; i < size; ++i) {
-            copyList.get(i).onViewWillAttachToParent(this, parent);
-        }
     }
 
     /**
@@ -559,13 +519,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onViewAttachedToParent(ViewGroup parent) {
-
-        ArrayList<OnViewAttachStateChangeListener> copyList =
-                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
-        int size = copyList.size();
-        for (int i = 0; i < size; ++i) {
-            copyList.get(i).onViewAttachedToParent(this, parent);
-        }
     }
 
     /**
@@ -582,13 +535,6 @@ public class ViewController {
             InputMethodManager imm = (InputMethodManager) getView().getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
         }
-
-        ArrayList<OnViewAttachStateChangeListener> copyList =
-                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
-        int size = copyList.size();
-        for (int i = 0; i < size; ++i) {
-            copyList.get(i).onViewWillDetachFromParent(this, parent);
-        }
     }
 
     /**
@@ -598,13 +544,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onViewDetachedFromParent(ViewGroup parent) {
-
-        ArrayList<OnViewAttachStateChangeListener> copyList =
-                (ArrayList<OnViewAttachStateChangeListener>)getOnViewAttachStateChangeListeners().clone();
-        int size = copyList.size();
-        for (int i = 0; i < size; ++i) {
-            copyList.get(i).onViewDetachedFromParent(this, parent);
-        }
     }
 
     /**
@@ -615,13 +554,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onViewWillAppear() {
-
-        ArrayList<OnViewAppearStateChangeListener> copyList =
-                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
-        int size = copyList.size();
-        for (int i = 0; i < size; ++i) {
-            copyList.get(i).onViewWillAppear(this);
-        }
     }
 
     /**
@@ -637,13 +569,6 @@ public class ViewController {
             setAlreadyAppeared(true);
             onViewFirstAppeared();
         }
-
-        ArrayList<OnViewAppearStateChangeListener> copyList =
-                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
-        int size = copyList.size();
-        for (int i = 0; i < size; ++i) {
-            copyList.get(i).onViewAppeared(this);
-        }
     }
 
     /**
@@ -651,7 +576,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onViewFirstAppeared() {
-
     }
 
     /**
@@ -661,13 +585,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onViewWillDisappear() {
-
-        ArrayList<OnViewAppearStateChangeListener> copyList =
-                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
-        int size = copyList.size();
-        for (int i = 0; i < size; ++i) {
-            copyList.get(i).onViewWillDisappear(this);
-        }
     }
 
     /**
@@ -678,13 +595,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onViewDisappeared() {
-
-        ArrayList<OnViewAppearStateChangeListener> copyList =
-                (ArrayList<OnViewAppearStateChangeListener>)getOnViewAppearStateChangeListeners().clone();
-        int size = copyList.size();
-        for (int i = 0; i < size; ++i) {
-            copyList.get(i).onViewDisappeared(this);
-        }
     }
 
     /**
@@ -692,7 +602,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onAttachAnimationStart() {
-
     }
 
     /**
@@ -700,7 +609,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onAttachAnimationEnd() {
-
     }
 
     /**
@@ -708,7 +616,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onAttachAnimationCancel() {
-
     }
 
     /**
@@ -716,7 +623,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onDetachAnimationStart() {
-
     }
 
     /**
@@ -724,7 +630,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onDetachAnimationEnd() {
-
     }
 
     /**
@@ -732,7 +637,6 @@ public class ViewController {
      */
     @CallSuper
     protected void onDetachAnimationCancel() {
-
     }
 
     /**
@@ -746,4 +650,104 @@ public class ViewController {
     }
 
     /* Private Methods */
+    private void internalAttemptToChangeStateFlow(@NonNull StateFlow.State state, boolean onAttach, @Nullable ViewGroup parent) {
+
+        while (state != getStateFlow().getState()) {
+            StateFlow.State nextState = StateFlow.State.Detached;
+            switch (getStateFlow().getState()) {
+                case WillAttach:
+                    nextState = onAttach ? StateFlow.State.Attached : StateFlow.State.WillDetach;
+                    break;
+                case Attached:
+                    nextState = onAttach ? StateFlow.State.WillAppear : StateFlow.State.WillDetach;
+                    break;
+                case WillAppear:
+                    nextState = onAttach ? StateFlow.State.Appeared : StateFlow.State.WillDetach;
+                    break;
+                case Appeared:
+                    nextState = onAttach ? null : StateFlow.State.WillDisappear;
+                    break;
+                case WillDisappear:
+                    nextState = onAttach ? StateFlow.State.WillAppear : StateFlow.State.Disappeared;
+                    break;
+                case Disappeared:
+                    nextState = onAttach ? StateFlow.State.WillAppear : StateFlow.State.WillDetach;
+                    break;
+                case WillDetach:
+                    nextState = onAttach ? StateFlow.State.WillAttach : StateFlow.State.Detached;
+                    break;
+                case Detached:
+                    nextState = onAttach ? StateFlow.State.WillAttach : null;
+                    break;
+            }
+
+            if (nextState == null) {
+                return;
+            }
+
+            getStateFlow().setState(nextState);
+
+            switch (nextState) {
+                case WillAttach:
+                    onViewWillAttachToParent(parent);
+                    break;
+                case Attached:
+                    onViewAttachedToParent(parent);
+                    break;
+                case WillAppear:
+                    onViewWillAppear();
+                    break;
+                case Appeared:
+                    onViewAppeared();
+                    break;
+                case WillDisappear:
+                    onViewWillDisappear();
+                    break;
+                case Disappeared:
+                    onViewDisappeared();
+                    break;
+                case WillDetach:
+                    onViewWillDetachFromParent(parent);
+                    break;
+                case Detached:
+                    onViewDetachedFromParent(parent);
+                    break;
+            }
+            internalNotifyStateChangeListeners(nextState, parent);
+        }
+    }
+
+    private void internalNotifyStateChangeListeners(StateFlow.State state, ViewGroup parent) {
+        ArrayList<OnViewStateChangeListener> copyList =
+                (ArrayList<OnViewStateChangeListener>) getOnViewStateChangeListeners().clone();
+        int size = copyList.size();
+        for (int i = 0; i < size; ++i) {
+            switch (state) {
+                case WillAttach:
+                    copyList.get(i).onViewWillAttachToParent(this, parent);
+                    break;
+                case Attached:
+                    copyList.get(i).onViewAttachedToParent(this, parent);
+                    break;
+                case WillAppear:
+                    copyList.get(i).onViewWillAppear(this);
+                    break;
+                case Appeared:
+                    copyList.get(i).onViewAppeared(this);
+                    break;
+                case WillDisappear:
+                    copyList.get(i).onViewWillDisappear(this);
+                    break;
+                case Disappeared:
+                    copyList.get(i).onViewDisappeared(this);
+                    break;
+                case WillDetach:
+                    copyList.get(i).onViewWillDetachFromParent(this, parent);
+                    break;
+                case Detached:
+                    copyList.get(i).onViewDetachedFromParent(this, parent);
+                    break;
+            }
+        }
+    }
 }

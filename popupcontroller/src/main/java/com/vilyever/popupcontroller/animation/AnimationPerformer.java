@@ -42,10 +42,10 @@ public abstract class AnimationPerformer {
         return (T) this;
     }
     public AnimationDirection getAnimationDirection() {
-        if (animationDirection == null) {
-            animationDirection = AnimationDirection.Center;
+        if (this.animationDirection == null) {
+            this.animationDirection = AnimationDirection.Center;
         }
-        return animationDirection;
+        return this.animationDirection;
     }
     
     

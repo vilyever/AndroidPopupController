@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.vilyever.popupcontroller.R;
@@ -57,7 +56,7 @@ public class PopupBackgroundView extends FrameLayout {
         return this;
     }
     public int getPopupBackgroundColor() {
-        return popupBackgroundColor;
+        return this.popupBackgroundColor;
     }
 
     /**
@@ -70,7 +69,7 @@ public class PopupBackgroundView extends FrameLayout {
         return this;
     }
     public int getEdgeRoundedRadius() {
-        return edgeRoundedRadius;
+        return this.edgeRoundedRadius;
     }
 
     /**
@@ -83,10 +82,10 @@ public class PopupBackgroundView extends FrameLayout {
         return this;
     }
     public PopupDirection getPopupDirection() {
-        if (popupDirection == null) {
-            popupDirection = PopupDirection.Center;
+        if (this.popupDirection == null) {
+            this.popupDirection = PopupDirection.Center;
         }
-        return popupDirection;
+        return this.popupDirection;
     }
 
     /**
@@ -99,7 +98,7 @@ public class PopupBackgroundView extends FrameLayout {
         return this;
     }
     public int getDirectionArrowHeight() {
-        return directionArrowHeight;
+        return this.directionArrowHeight;
     }
 
     /**
@@ -112,7 +111,7 @@ public class PopupBackgroundView extends FrameLayout {
         return this;
     }
     public int getPopupShadowRadius() {
-        return popupShadowRadius;
+        return this.popupShadowRadius;
     }
 
     /**
@@ -125,10 +124,10 @@ public class PopupBackgroundView extends FrameLayout {
         return this;
     }
     public Rect getEdgePadding() {
-        if (edgePadding == null) {
-            edgePadding = new Rect();
+        if (this.edgePadding == null) {
+            this.edgePadding = new Rect();
         }
-        return edgePadding;
+        return this.edgePadding;
     }
 
     /**
@@ -136,10 +135,10 @@ public class PopupBackgroundView extends FrameLayout {
      */
     private RectF contentRect;
     private RectF getContentRect() {
-        if (contentRect == null) {
-            contentRect = new RectF();
+        if (this.contentRect == null) {
+            this.contentRect = new RectF();
         }
-        return contentRect;
+        return this.contentRect;
     }
 
     /**
@@ -147,29 +146,29 @@ public class PopupBackgroundView extends FrameLayout {
      */
     private RectF edgeRoundedArcRect;
     private RectF getEdgeRoundedArcRect() {
-        if (edgeRoundedArcRect == null) {
-            edgeRoundedArcRect = new RectF();
+        if (this.edgeRoundedArcRect == null) {
+            this.edgeRoundedArcRect = new RectF();
         }
-        return edgeRoundedArcRect;
+        return this.edgeRoundedArcRect;
     }
 
     private Path popupBackgroundPath;
     private Path getPopupBackgroundPath() {
-        if (popupBackgroundPath == null) {
-            popupBackgroundPath = new Path();
+        if (this.popupBackgroundPath == null) {
+            this.popupBackgroundPath = new Path();
         }
-        return popupBackgroundPath;
+        return this.popupBackgroundPath;
     }
 
     private Paint popupBackgroundPaint;
     private Paint getPopupBackgroundPaint() {
-        if (popupBackgroundPaint == null) {
-            popupBackgroundPaint = new Paint();
-            popupBackgroundPaint.setAntiAlias(true);
-            popupBackgroundPaint.setDither(true);
-            popupBackgroundPaint.setStyle(Paint.Style.FILL);
+        if (this.popupBackgroundPaint == null) {
+            this.popupBackgroundPaint = new Paint();
+            this.popupBackgroundPaint.setAntiAlias(true);
+            this.popupBackgroundPaint.setDither(true);
+            this.popupBackgroundPaint.setStyle(Paint.Style.FILL);
         }
-        return popupBackgroundPaint;
+        return this.popupBackgroundPaint;
     }
 
     /* Overrides */
@@ -271,12 +270,11 @@ public class PopupBackgroundView extends FrameLayout {
     
     /* Private Methods */
     private void init() {
-        directionArrowHeight = getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundArrowHeight);
-        popupShadowRadius =  getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundShadowRadius);
-        popupBackgroundColor = Color.WHITE;
+        this.directionArrowHeight = getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundArrowHeight);
+        this.popupShadowRadius =  getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundShadowRadius);
+        this.popupBackgroundColor = Color.WHITE;
 
         setWillNotDraw(false);
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     /**

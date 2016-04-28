@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 import com.vilyever.popupcontroller.ViewController;
+import com.vilyever.resource.Resource;
 
 /**
  * PopupController
@@ -74,9 +75,13 @@ public class PopupController extends ViewController {
 
             getPopupWindow().setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
             getPopupWindow().setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-            getPopupWindow().getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//            getPopupWindow().getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            getPopupWindow().getContentView().measure(View.MeasureSpec.makeMeasureSpec(Resource.getDisplayMetrics().widthPixels, View.MeasureSpec.AT_MOST), View.MeasureSpec.makeMeasureSpec(Resource.getDisplayMetrics().heightPixels, View.MeasureSpec.AT_MOST));
             int popupWidth = getPopupWindow().getContentView().getMeasuredWidth();
             int popupHeight = getPopupWindow().getContentView().getMeasuredHeight();
+
+            getPopupWindow().setWidth(popupWidth);
+            getPopupWindow().setHeight(popupHeight);
 
             int[] location = new int[2];
             anchorView.getLocationInWindow(location);
@@ -151,9 +156,13 @@ public class PopupController extends ViewController {
 
             getPopupWindow().setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
             getPopupWindow().setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-            getPopupWindow().getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//            getPopupWindow().getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            getPopupWindow().getContentView().measure(View.MeasureSpec.makeMeasureSpec(Resource.getDisplayMetrics().widthPixels, View.MeasureSpec.AT_MOST), View.MeasureSpec.makeMeasureSpec(Resource.getDisplayMetrics().heightPixels, View.MeasureSpec.AT_MOST));
             int popupWidth = getPopupWindow().getContentView().getMeasuredWidth();
             int popupHeight = getPopupWindow().getContentView().getMeasuredHeight();
+
+            getPopupWindow().setWidth(popupWidth);
+            getPopupWindow().setHeight(popupHeight);
 
             int[] location = new int[2];
             anchorView.getLocationInWindow(location);
@@ -275,14 +284,14 @@ public class PopupController extends ViewController {
     /* Properties */
     private PopupWindow popupWindow;
     protected PopupWindow getPopupWindow() {
-        if (popupWindow == null) {
-            popupWindow = new PopupWindow(getPopupBackgroundView());
-            popupWindow.setFocusable(true);
-            popupWindow.setClippingEnabled(false);
-            popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
-            popupWindow.setBackgroundDrawable(new ColorDrawable());
+        if (this.popupWindow == null) {
+            this.popupWindow = new PopupWindow(getPopupBackgroundView());
+            this.popupWindow.setFocusable(true);
+            this.popupWindow.setClippingEnabled(false);
+            this.popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+            this.popupWindow.setBackgroundDrawable(new ColorDrawable());
 
-            popupWindow.setTouchInterceptor(new View.OnTouchListener() {
+            this.popupWindow.setTouchInterceptor(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (!isDismissOnTouchOutside()) {
@@ -300,22 +309,22 @@ public class PopupController extends ViewController {
                 }
             });
 
-            popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            this.popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
                 public void onDismiss() {
                     onPopupDismiss();
                 }
             });
         }
-        return popupWindow;
+        return this.popupWindow;
     }
 
     private PopupBackgroundView popupBackgroundView;
     protected PopupBackgroundView getPopupBackgroundView() {
-        if (popupBackgroundView == null) {
-            popupBackgroundView = new PopupBackgroundView(getContext());
+        if (this.popupBackgroundView == null) {
+            this.popupBackgroundView = new PopupBackgroundView(getContext());
         }
-        return popupBackgroundView;
+        return this.popupBackgroundView;
     }
 
     public interface OnPopupDismissListener {
@@ -327,14 +336,14 @@ public class PopupController extends ViewController {
         return (T) this;
     }
     public OnPopupDismissListener getOnPopupDismissListener() {
-        if (onPopupDismissListener == null) {
-            onPopupDismissListener = new OnPopupDismissListener() {
+        if (this.onPopupDismissListener == null) {
+            this.onPopupDismissListener = new OnPopupDismissListener() {
                 @Override
                 public void onPopupWindowDismiss(PopupController controller) {
                 }
             };
         }
-        return onPopupDismissListener;
+        return this.onPopupDismissListener;
     }
 
     /**
@@ -346,7 +355,7 @@ public class PopupController extends ViewController {
         return (T) this;
     }
     public boolean isDismissOnTouchOutside() {
-        return dismissOnTouchOutside;
+        return this.dismissOnTouchOutside;
     }
 
     /* Overrides */
