@@ -17,7 +17,7 @@ Step 2. Add the dependency in the form
 
 ```gradle
 dependencies {
-  compile 'com.github.vilyever:AndroidPopupController:1.5.2'
+  compile 'com.github.vilyever:AndroidPopupController:1.6.0'
 }
 ```
 
