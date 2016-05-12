@@ -221,7 +221,7 @@ public class PopupController extends ViewController {
      */
     public <T extends PopupController> T dismissPopup() {
         if (isShowing()) {
-            getPopupWindow().dismiss();
+            getPopupWindow().close();
         }
 
         return (T) this;
@@ -282,10 +282,10 @@ public class PopupController extends ViewController {
     
     
     /* Properties */
-    private PopupWindow popupWindow;
-    protected PopupWindow getPopupWindow() {
+    private CustomPopupWindow popupWindow;
+    protected CustomPopupWindow getPopupWindow() {
         if (this.popupWindow == null) {
-            this.popupWindow = new PopupWindow(getPopupBackgroundView());
+            this.popupWindow = new CustomPopupWindow(getPopupBackgroundView());
             this.popupWindow.setFocusable(true);
             this.popupWindow.setClippingEnabled(false);
             this.popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
@@ -365,8 +365,8 @@ public class PopupController extends ViewController {
     /* Protected Methods */
     @CallSuper
     protected void onPopupDismiss() {
-        detachFromParent(false);
-        getOnPopupDismissListener().onPopupWindowDismiss(self);
+//        detachFromParent(false);
+        getOnPopupDismissListener().onPopupWindowDismiss(this);
     }
      
     /* Private Methods */

@@ -17,7 +17,6 @@ import com.vilyever.popupcontroller.animation.AnimationPerformer;
 import com.vilyever.popupcontroller.animation.OnAnimationStateChangeListener;
 import com.vilyever.popupcontroller.listener.OnViewStateChangeListener;
 import com.vilyever.popupcontroller.listener.OnViewLayoutChangeListener;
-import com.vilyever.popupcontroller.util.StateFlow;
 
 import java.util.ArrayList;
 
