@@ -195,13 +195,13 @@ public class PopupBackgroundView extends FrameLayout {
             case Left:
                 getContentRect().right -= getDirectionArrowHeight();
                 break;
-            case Up:
+            case Top:
                 getContentRect().bottom -= getDirectionArrowHeight();
                 break;
             case Right:
                 getContentRect().left += getDirectionArrowHeight();
                 break;
-            case Down:
+            case Bottom:
                 getContentRect().top += getDirectionArrowHeight();
                 break;
         }
@@ -219,7 +219,7 @@ public class PopupBackgroundView extends FrameLayout {
     
         getPopupBackgroundPath().moveTo(getContentRect().left + getEdgeRoundedRadius(), getContentRect().top);
     
-        if (getPopupDirection() == PopupDirection.Down) {
+        if (getPopupDirection() == PopupDirection.Bottom) {
             getPopupBackgroundPath().lineTo(centerX - triangleLength / 2, getContentRect().top);
             getPopupBackgroundPath().lineTo(centerX, top);
             getPopupBackgroundPath().lineTo(centerX + triangleLength / 2, getContentRect().top);
@@ -237,7 +237,7 @@ public class PopupBackgroundView extends FrameLayout {
         getEdgeRoundedArcRect().offsetTo(getContentRect().right - getEdgeRoundedRadius() * 2, getContentRect().bottom - getEdgeRoundedRadius() * 2);
         getPopupBackgroundPath().arcTo(getEdgeRoundedArcRect(), 0.0f, 90.0f);
     
-        if (getPopupDirection() == PopupDirection.Up) {
+        if (getPopupDirection() == PopupDirection.Top) {
             getPopupBackgroundPath().lineTo(centerX - triangleLength / 2, getContentRect().bottom);
             getPopupBackgroundPath().lineTo(centerX, bottom);
             getPopupBackgroundPath().lineTo(centerX + triangleLength / 2, getContentRect().bottom);
@@ -290,13 +290,13 @@ public class PopupBackgroundView extends FrameLayout {
             case Left:
                 right += getDirectionArrowHeight();
                 break;
-            case Up:
+            case Top:
                 bottom += getDirectionArrowHeight();
                 break;
             case Right:
                 left += getDirectionArrowHeight();
                 break;
-            case Down:
+            case Bottom:
                 top += getDirectionArrowHeight();
                 break;
         }

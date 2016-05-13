@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.vilyever.popupcontroller.ViewController;
 import com.vilyever.popupcontroller.hud.HudController;
 import com.vilyever.popupcontroller.popup.PopupController;
+import com.vilyever.popupcontroller.popup.PopupDirection;
 import com.vilyever.unitconversion.DimenConverter;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 
 
-//                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Up, true);
+                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Top, true);
 
 //                self.popupController.popupInView(self.getWindow().getDecorView(), PopupDirection.Center);
 

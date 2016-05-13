@@ -8,6 +8,6 @@ package com.vilyever.popupcontroller.popup;
  * {@link PopupController}弹出时的方向
  */
 public enum PopupDirection {
-    Center, Left, Up, Right, Down,
-    LeftUp, RightUp, RightDown, LeftDown;
+    Center, Left, Top, Right, Bottom,
+    LeftTop, RightTop, RightBottom, LeftBottom;
 }

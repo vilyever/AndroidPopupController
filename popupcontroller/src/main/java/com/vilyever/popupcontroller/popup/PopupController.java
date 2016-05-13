@@ -58,7 +58,7 @@ public class PopupController extends ViewController {
      * 从某个view上弹出popupWindow
      * @param anchorView 锚view
      * @param popupDirection popupWindow方向
-     * @param withArrow 是否显示箭头，仅对左上右下四个正方向有效。{@link PopupDirection#Left}{@link PopupDirection#Up}{@link PopupDirection#Right}{@link PopupDirection#Down}
+     * @param withArrow 是否显示箭头，仅对左上右下四个正方向有效。{@link PopupDirection#Left}{@link PopupDirection#Top}{@link PopupDirection#Right}{@link PopupDirection#Bottom}
      * @param offsetX X轴偏移量
      * @param offsetY Y轴偏移量
      */
@@ -100,7 +100,7 @@ public class PopupController extends ViewController {
                     popupX = originX - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - (popupHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     break;
-                case Up:
+                case Top:
                     popupX = originX - (popupWidth / 2 - anchorView.getWidth() / 2) + offsetX;
                     popupY = originY - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
@@ -108,23 +108,23 @@ public class PopupController extends ViewController {
                     popupX = originX + anchorView.getWidth() - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - (popupHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     break;
-                case Down:
+                case Bottom:
                     popupX = originX - (popupWidth / 2 - anchorView.getWidth() / 2) + offsetX;
                     popupY = originY + anchorView.getHeight() - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
-                case LeftUp:
+                case LeftTop:
                     popupX = originX - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
-                case RightUp:
+                case RightTop:
                     popupX = originX + anchorView.getWidth() - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
-                case RightDown:
+                case RightBottom:
                     popupX = originX + anchorView.getWidth() - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY + anchorView.getHeight() - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
-                case LeftDown:
+                case LeftBottom:
                     popupX = originX - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY + anchorView.getHeight() - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
@@ -181,7 +181,7 @@ public class PopupController extends ViewController {
                     popupX = originX - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - (popupHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     break;
-                case Up:
+                case Top:
                     popupX = originX - (popupWidth / 2 - anchorView.getWidth() / 2) + offsetX;
                     popupY = originY - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
@@ -189,23 +189,23 @@ public class PopupController extends ViewController {
                     popupX = originX + anchorView.getWidth() - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - (popupHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     break;
-                case Down:
+                case Bottom:
                     popupX = originX - (popupWidth / 2 - anchorView.getWidth() / 2) + offsetX;
                     popupY = originY + anchorView.getHeight() - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
-                case LeftUp:
+                case LeftTop:
                     popupX = originX - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
-                case RightUp:
+                case RightTop:
                     popupX = originX + anchorView.getWidth() - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY - getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
-                case RightDown:
+                case RightBottom:
                     popupX = originX + anchorView.getWidth() - popupWidth + getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY + anchorView.getHeight() - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
-                case LeftDown:
+                case LeftBottom:
                     popupX = originX - getPopupBackgroundView().getPopupShadowRadius() + offsetX;
                     popupY = originY + anchorView.getHeight() - popupHeight + getPopupBackgroundView().getPopupShadowRadius() + offsetY;
                     break;
