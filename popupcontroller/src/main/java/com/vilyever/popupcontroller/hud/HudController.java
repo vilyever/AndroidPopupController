@@ -92,14 +92,14 @@ public class HudController extends PopupController {
         internalUpdateLayout();
 
         if (ViewCompat.isAttachedToWindow(activity.getWindow().getDecorView())) {
-            popupInView(activity.getWindow().getDecorView(), PopupDirection.Center);
+            internalShow(activity.getWindow().getDecorView());
         }
         else {
             activity.getWindow().getDecorView().post(new Runnable() {
                 @Override
                 public void run() {
                     if (ViewCompat.isAttachedToWindow(activity.getWindow().getDecorView())) {
-                        self.popupInView(activity.getWindow().getDecorView(), PopupDirection.Center);
+                        self.internalShow(activity.getWindow().getDecorView());
                     }
                 }
             });
@@ -425,5 +425,9 @@ public class HudController extends PopupController {
             getRightButtonSplitView().setVisibility(View.VISIBLE);
         }
 
+    }
+
+    private void internalShow(View view) {
+        popupInView(view, PopupDirection.Center);
     }
 }

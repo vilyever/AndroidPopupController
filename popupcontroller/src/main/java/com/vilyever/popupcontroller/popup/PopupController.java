@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 import com.vilyever.popupcontroller.ViewController;
@@ -283,11 +284,12 @@ public class PopupController extends ViewController {
     
     /* Properties */
     private CustomPopupWindow popupWindow;
-    protected CustomPopupWindow getPopupWindow() {
+    public CustomPopupWindow getPopupWindow() {
         if (this.popupWindow == null) {
             this.popupWindow = new CustomPopupWindow(getPopupBackgroundView());
             this.popupWindow.setFocusable(true);
-            this.popupWindow.setClippingEnabled(false);
+            this.popupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+//            this.popupWindow.setClippingEnabled(false); // set false to enable show outside of the window(srceen), set true(default) enable input keyboard adjust pan.
             this.popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
             this.popupWindow.setBackgroundDrawable(new ColorDrawable());
 
@@ -320,7 +322,7 @@ public class PopupController extends ViewController {
     }
 
     private PopupBackgroundView popupBackgroundView;
-    protected PopupBackgroundView getPopupBackgroundView() {
+    public PopupBackgroundView getPopupBackgroundView() {
         if (this.popupBackgroundView == null) {
             this.popupBackgroundView = new PopupBackgroundView(getContext());
         }

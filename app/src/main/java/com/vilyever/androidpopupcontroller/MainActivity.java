@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.vilyever.popupcontroller.ViewController;
 import com.vilyever.popupcontroller.hud.HudController;
 import com.vilyever.popupcontroller.popup.PopupController;
 import com.vilyever.unitconversion.DimenConverter;
@@ -126,8 +127,16 @@ public class MainActivity extends AppCompatActivity {
             hudController.setLeftButtonTitle("ok").dismissOnLeftButton();
             hudController.setRightButtonTitle("cancel").dismissOnRightButton();
             hudController.setCenterButtonTitle("haha");
-            hudController.setCustomView(getTitleLabel());
+            hudController.setCustomView(getEditController().getView());
         }
         return this.hudController;
+    }
+
+    private ViewController editController;
+    protected ViewController getEditController() {
+        if (this.editController == null) {
+            this.editController = new ViewController(this, R.layout.test_edit_layout);
+        }
+        return this.editController;
     }
 }
