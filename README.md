@@ -17,7 +17,7 @@ Step 2. Add the dependency in the form
 
 ```gradle
 dependencies {
-  compile 'com.github.vilyever:AndroidPopupController:1.6.0'
+  compile 'com.github.vilyever:AndroidPopupController:1.8.0'
 }
 ```
 
@@ -30,7 +30,7 @@ popupController.setEdgePadding(8, 8, 8, 8);
 popupController.setEdgeRoundedRadius(5);
 
 // then call this to popup
-popupController.popupFromView(findViewById(R.id.titleLabel), PopupDirection.Up, true);
+popupController.popupFromView(findViewById(R.id.titleLabel), PopupDirection.Top, true);
 ```
 
 ## License
