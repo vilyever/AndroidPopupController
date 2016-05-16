@@ -56,12 +56,16 @@ public class HudController extends PopupController {
             show(resumedActivity);
         }
         else {
+            setPrepareToShow(true);
             ActivityHelper.registerActivityStateDelegate(new ActivityStateDelegate.SimpleActivityStateDelegate() {
                 @Override
                 public void onActivityResumed(Activity activity) {
                     super.onActivityResumed(activity);
 
-                    self.show(activity);
+                    if (self.isPrepareToShow()) {
+                        self.setPrepareToShow(false);
+                        self.show(activity);
+                    }
 
                     ActivityHelper.removeActivityStateDelegate(this);
                 }
@@ -95,11 +99,15 @@ public class HudController extends PopupController {
             internalShow(activity.getWindow().getDecorView());
         }
         else {
+            setPrepareToShow(true);
             activity.getWindow().getDecorView().post(new Runnable() {
                 @Override
                 public void run() {
-                    if (ViewCompat.isAttachedToWindow(activity.getWindow().getDecorView())) {
-                        self.internalShow(activity.getWindow().getDecorView());
+                    if (self.isPrepareToShow()) {
+                        self.setPrepareToShow(false);
+                        if (ViewCompat.isAttachedToWindow(activity.getWindow().getDecorView())) {
+                            self.internalShow(activity.getWindow().getDecorView());
+                        }
                     }
                 }
             });
@@ -344,10 +352,24 @@ public class HudController extends PopupController {
         return this.rightButton;
     }
     
+    private boolean prepareToShow;
+    protected HudController setPrepareToShow(boolean prepareToShow) {
+        this.prepareToShow = prepareToShow;
+        return this;
+    }
+    public boolean isPrepareToShow() {
+        return this.prepareToShow;
+    }
+    
 
     /* Overrides */
-    
-    
+
+    @Override
+    public <T extends PopupController> T dismissPopup() {
+        setPrepareToShow(false);
+        return super.dismissPopup();
+    }
+
     /* Delegates */
     
     
