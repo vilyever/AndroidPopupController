@@ -3,6 +3,8 @@ package com.vilyever.androidpopupcontroller;
 import android.app.Application;
 import android.content.ComponentCallbacks;
 
+import com.vilyever.popupcontroller.ViewControllerManager;
+
 /**
  * App
  * AndroidPopupController <com.vilyever.androidpopupcontroller>
@@ -25,42 +27,7 @@ public class App extends Application {
 //        httpSender.setBasicAuth("vilyever", "vilyever");
 //        ACRA.getErrorReporter().addReportSender(httpSender);
 
-//        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-//            @Override
-//            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-//                System.out.println("onActivityCreated " + activity);
-//            }
-//
-//            @Override
-//            public void onActivityStarted(Activity activity) {
-//                System.out.println("onActivityStarted " + activity);
-//            }
-//
-//            @Override
-//            public void onActivityResumed(Activity activity) {
-//                System.out.println("onActivityResumed " + activity);
-//            }
-//
-//            @Override
-//            public void onActivityPaused(Activity activity) {
-//                System.out.println("onActivityPaused " + activity);
-//            }
-//
-//            @Override
-//            public void onActivityStopped(Activity activity) {
-//                System.out.println("onActivityStopped " + activity);
-//            }
-//
-//            @Override
-//            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-//
-//            }
-//
-//            @Override
-//            public void onActivityDestroyed(Activity activity) {
-//                System.out.println("onActivityDestroyed " + activity);
-//            }
-//        });
+        ViewControllerManager.initialize(this);
     }
 
     @Override

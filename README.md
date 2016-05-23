@@ -17,12 +17,21 @@ Step 2. Add the dependency in the form
 
 ```gradle
 dependencies {
-  compile 'com.github.vilyever:AndroidPopupController:1.8.1'
+  compile 'com.github.vilyever:AndroidPopupController:2.0.0'
 }
 ```
 
 ## Usage
 ```java
+
+// 初始化
+public class App extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        ViewControllerManager.initialize(this);
+    }
+}
 
 PopupController popupController = new PopupController(MainActivity.this, R.layout.test_view);
 popupController.setPopupBackgroundColor(Color.BLUE);
