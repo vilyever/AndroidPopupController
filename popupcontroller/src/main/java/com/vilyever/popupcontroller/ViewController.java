@@ -236,7 +236,7 @@ public class ViewController {
      * 是否添加到了某个parent上
      */
     public boolean isAttachedToParent() {
-        return getStateFlow().getState() == StateFlow.State.Attached;
+        return getView() != null && getView().getParent() != null;
     }
 
     /**
