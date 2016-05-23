@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,10 +14,13 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
+import com.vilyever.activityhelper.ActivityHelper;
+import com.vilyever.activityhelper.ActivityStateDelegate;
+import com.vilyever.contextholder.ContextHolder;
 import com.vilyever.popupcontroller.animation.AnimationPerformer;
 import com.vilyever.popupcontroller.animation.OnAnimationStateChangeListener;
-import com.vilyever.popupcontroller.listener.OnViewStateChangeListener;
 import com.vilyever.popupcontroller.listener.OnViewLayoutChangeListener;
+import com.vilyever.popupcontroller.listener.OnViewStateChangeListener;
 
 import java.util.ArrayList;
 
@@ -33,10 +37,16 @@ public class ViewController {
 
     /* Constructors */
     public ViewController(Context context) {
+        ViewControllerManager.checkInitialized();
+
         setContext(context);
+
+        ActivityHelper.registerActivityStateDelegate(getActivityStateDelegate());
     }
 
     public ViewController(Context context, int layout) {
+        this(context);
+
         // For generate LayoutParams
         FrameLayout wrapperFrameLayout = new FrameLayout(context);
 
@@ -46,6 +56,8 @@ public class ViewController {
     }
 
     public ViewController(View view) {
+        this(view.getContext());
+
         setView(view);
     }
 
@@ -346,6 +358,70 @@ public class ViewController {
         return this.detachAnimationPerformer;
     }
 
+    private ActivityStateDelegate activityStateDelegate;
+    protected ActivityStateDelegate getActivityStateDelegate() {
+        if (this.activityStateDelegate == null) {
+            this.activityStateDelegate = new ActivityStateDelegate() {
+                @Override
+                public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                    if (self.getContext().equals(activity)
+                            || self.getContext().equals(ContextHolder.getContext())) {
+                        self.onActivityCreated(activity, savedInstanceState);
+                    }
+                }
+
+                @Override
+                public void onActivityStarted(Activity activity) {
+                    if (self.getContext().equals(activity)
+                        || self.getContext().equals(ContextHolder.getContext())) {
+                        self.onActivityStarted(activity);
+                    }
+                }
+
+                @Override
+                public void onActivityResumed(Activity activity) {
+                    if (self.getContext().equals(activity)
+                        || self.getContext().equals(ContextHolder.getContext())) {
+                        self.onActivityResumed(activity);
+                    }
+                }
+
+                @Override
+                public void onActivityPaused(Activity activity) {
+                    if (self.getContext().equals(activity)
+                        || self.getContext().equals(ContextHolder.getContext())) {
+                        self.onActivityPaused(activity);
+                    }
+                }
+
+                @Override
+                public void onActivityStopped(Activity activity) {
+                    if (self.getContext().equals(activity)
+                        || self.getContext().equals(ContextHolder.getContext())) {
+                        self.onActivityStopped(activity);
+                    }
+                }
+
+                @Override
+                public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+                    if (self.getContext().equals(activity)
+                        || self.getContext().equals(ContextHolder.getContext())) {
+                        self.onActivitySaveInstanceState(activity, outState);
+                    }
+                }
+
+                @Override
+                public void onActivityDestroyed(Activity activity) {
+                    if (self.getContext().equals(activity)
+                        || self.getContext().equals(ContextHolder.getContext())) {
+                        self.onActivityDestroyed(activity);
+                    }
+                }
+            };
+        }
+        return this.activityStateDelegate;
+    }
+
     /**
      * OnLayoutChangeListener
      * 用于当前根视图{@link #view}
@@ -636,6 +712,41 @@ public class ViewController {
      */
     @CallSuper
     protected void onDetachAnimationCancel() {
+    }
+
+    @CallSuper
+    protected void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+    }
+
+    @CallSuper
+    protected void onActivityStarted(Activity activity) {
+
+    }
+
+    @CallSuper
+    protected void onActivityResumed(Activity activity) {
+
+    }
+
+    @CallSuper
+    protected void onActivityPaused(Activity activity) {
+
+    }
+
+    @CallSuper
+    protected void onActivityStopped(Activity activity) {
+
+    }
+
+    @CallSuper
+    protected void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+    }
+
+    @CallSuper
+    protected void onActivityDestroyed(Activity activity) {
+
     }
 
     /**

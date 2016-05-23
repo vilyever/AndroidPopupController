@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.vilyever.activityhelper.ActivityHelper;
-import com.vilyever.activityhelper.ActivityStateDelegate;
 import com.vilyever.contextholder.ContextHolder;
 import com.vilyever.popupcontroller.popup.PopupController;
 import com.vilyever.popupcontroller.popup.PopupDirection;
@@ -56,20 +55,10 @@ public class HudController extends PopupController {
             show(resumedActivity);
         }
         else {
+            /**
+             * wait for activity resume
+             */
             setPrepareToShow(true);
-            ActivityHelper.registerActivityStateDelegate(new ActivityStateDelegate.SimpleActivityStateDelegate() {
-                @Override
-                public void onActivityResumed(Activity activity) {
-                    super.onActivityResumed(activity);
-
-                    if (self.isPrepareToShow()) {
-                        self.setPrepareToShow(false);
-                        self.show(activity);
-                    }
-
-                    ActivityHelper.removeActivityStateDelegate(this);
-                }
-            });
         }
 
         return (T) this;
@@ -363,11 +352,20 @@ public class HudController extends PopupController {
     
 
     /* Overrides */
-
     @Override
     public <T extends PopupController> T dismissPopup() {
         setPrepareToShow(false);
         return super.dismissPopup();
+    }
+
+    @Override
+    protected void onActivityResumed(Activity activity) {
+        super.onActivityResumed(activity);
+
+        if (isPrepareToShow()) {
+            setPrepareToShow(false);
+            show(activity);
+        }
     }
 
     /* Delegates */
