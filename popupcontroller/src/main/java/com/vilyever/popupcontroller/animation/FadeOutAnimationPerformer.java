@@ -33,28 +33,28 @@ public class FadeOutAnimationPerformer extends AnimationPerformer {
             case Left:
                 view.animate().translationX(-DefaultDirectionMoveDistance);
                 break;
-            case Up:
+            case Top:
                 view.animate().translationY(-DefaultDirectionMoveDistance);
                 break;
             case Right:
                 view.animate().translationX(DefaultDirectionMoveDistance);
                 break;
-            case Down:
+            case Bottom:
                 view.animate().translationY(DefaultDirectionMoveDistance);
                 break;
-            case LeftUp:
+            case LeftTop:
                 view.animate().translationX(-DefaultDirectionMoveDistance);
                 view.animate().translationY(-DefaultDirectionMoveDistance);
                 break;
-            case RightUp:
+            case RightTop:
                 view.animate().translationX(DefaultDirectionMoveDistance);
                 view.animate().translationY(-DefaultDirectionMoveDistance);
                 break;
-            case RightDown:
+            case RightBottom:
                 view.animate().translationX(DefaultDirectionMoveDistance);
                 view.animate().translationY(DefaultDirectionMoveDistance);
                 break;
-            case LeftDown:
+            case LeftBottom:
                 view.animate().translationX(-DefaultDirectionMoveDistance);
                 view.animate().translationY(DefaultDirectionMoveDistance);
                 break;
@@ -64,7 +64,9 @@ public class FadeOutAnimationPerformer extends AnimationPerformer {
         view.animate().setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                listener.onAnimationStart();
+                if (listener != null) {
+                    listener.onAnimationStart();
+                }
             }
 
             @Override
@@ -72,7 +74,10 @@ public class FadeOutAnimationPerformer extends AnimationPerformer {
                 view.setAlpha(1.0f);
                 view.setTranslationX(0.0f);
                 view.setTranslationY(0.0f);
-                listener.onAnimationEnd();
+
+                if (listener != null) {
+                    listener.onAnimationEnd();
+                }
             }
 
             @Override
@@ -80,7 +85,10 @@ public class FadeOutAnimationPerformer extends AnimationPerformer {
                 view.setAlpha(1.0f);
                 view.setTranslationX(0.0f);
                 view.setTranslationY(0.0f);
-                listener.onAnimationCancel();
+
+                if (listener != null) {
+                    listener.onAnimationCancel();
+                }
             }
 
             @Override

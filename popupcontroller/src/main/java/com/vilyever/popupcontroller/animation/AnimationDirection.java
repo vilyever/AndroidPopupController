@@ -7,6 +7,6 @@ package com.vilyever.popupcontroller.animation;
  * Feature:
  */
 public enum AnimationDirection {
-    Center, Left, Up, Right, Down,
-    LeftUp, RightUp, RightDown, LeftDown;
+    Center, Left, Top, Right, Bottom,
+    LeftTop, RightTop, RightBottom, LeftBottom;
 }

@@ -387,11 +387,10 @@ public class HudController extends PopupController {
 
         getRootFrameLayout().addView(getContentLinearLayout());
 
-        setDismissOnTouchOutside(false);
         setPopupBackgroundColor(Color.parseColor("#88000000"));
         setEdgeRoundedRadius(DimenConverter.dpToPixel(8));
-
-        getPopupWindow().setDismissDisabled(true);
+        setDismissOnTouchOutside(false);
+        setDismissOnBackPressed(false);
     }
 
     private View internalGenerateSplitView() {

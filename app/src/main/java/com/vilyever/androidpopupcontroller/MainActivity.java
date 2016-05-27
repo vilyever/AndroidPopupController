@@ -1,5 +1,6 @@
 package com.vilyever.androidpopupcontroller;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 
 
-                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Top, true);
+                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Top, true, 0, 0);
 
 //                self.popupController.popupInView(self.getWindow().getDecorView(), PopupDirection.Center);
 
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                getHudController().show();
+//                getHudController().show();
             }
         });
 
@@ -129,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
             hudController.setRightButtonTitle("cancel").dismissOnRightButton();
             hudController.setCenterButtonTitle("haha");
             hudController.setCustomView(getEditController().getView());
+            this.hudController.setDismissOnBackPressed(true);
         }
         return this.hudController;
     }
@@ -136,8 +140,25 @@ public class MainActivity extends AppCompatActivity {
     private ViewController editController;
     protected ViewController getEditController() {
         if (this.editController == null) {
-            this.editController = new ViewController(this, R.layout.test_edit_layout);
+            this.editController = new ViewController(this, R.layout.test_edit_layout) {
+                @Override
+                protected void onViewWillAttachToParent(ViewGroup parent) {
+                    super.onViewWillAttachToParent(parent);
+
+                    View view = this.findViewById(R.id.blueView);
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            EditText editText = findViewById(R.id.editText);
+                            editText.clearFocus();
+                            InputMethodManager imm = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                        }
+                    });
+                }
+            };
         }
         return this.editController;
     }
+
 }

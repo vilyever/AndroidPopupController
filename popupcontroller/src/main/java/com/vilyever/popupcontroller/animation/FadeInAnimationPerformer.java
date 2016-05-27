@@ -33,28 +33,28 @@ public class FadeInAnimationPerformer extends AnimationPerformer {
             case Left:
                 view.setTranslationX(-DefaultDirectionMoveDistance);
                 break;
-            case Up:
+            case Top:
                 view.setTranslationY(-DefaultDirectionMoveDistance);
                 break;
             case Right:
                 view.setTranslationX(DefaultDirectionMoveDistance);
                 break;
-            case Down:
+            case Bottom:
                 view.setTranslationY(DefaultDirectionMoveDistance);
                 break;
-            case LeftUp:
+            case LeftTop:
                 view.setTranslationX(-DefaultDirectionMoveDistance);
                 view.setTranslationY(-DefaultDirectionMoveDistance);
                 break;
-            case RightUp:
+            case RightTop:
                 view.setTranslationX(DefaultDirectionMoveDistance);
                 view.setTranslationY(-DefaultDirectionMoveDistance);
                 break;
-            case RightDown:
+            case RightBottom:
                 view.setTranslationX(DefaultDirectionMoveDistance);
                 view.setTranslationY(DefaultDirectionMoveDistance);
                 break;
-            case LeftDown:
+            case LeftBottom:
                 view.setTranslationX(-DefaultDirectionMoveDistance);
                 view.setTranslationY(DefaultDirectionMoveDistance);
                 break;
@@ -66,12 +66,16 @@ public class FadeInAnimationPerformer extends AnimationPerformer {
         view.animate().setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                listener.onAnimationStart();
+                if (listener != null) {
+                    listener.onAnimationStart();
+                }
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                listener.onAnimationEnd();
+                if (listener != null) {
+                    listener.onAnimationEnd();
+                }
             }
 
             @Override
@@ -79,7 +83,10 @@ public class FadeInAnimationPerformer extends AnimationPerformer {
                 view.setAlpha(1.0f);
                 view.setTranslationX(0.0f);
                 view.setTranslationY(0.0f);
-                listener.onAnimationCancel();
+
+                if (listener != null) {
+                    listener.onAnimationCancel();
+                }
             }
 
             @Override

@@ -21,23 +21,25 @@ import com.vilyever.popupcontroller.R;
  * {@link PopupController}弹出时的背景视图
  * 实现箭头 边框圆角 阴影等效果
  */
-public class PopupBackgroundView extends FrameLayout {
-    final PopupBackgroundView self = this;
+public class PopupTargetBackgroundView extends FrameLayout {
+    final PopupTargetBackgroundView self = this;
+
+    public static final int WindowLocationCenter = -1;
 
     /* Constructors */
-    public PopupBackgroundView(Context context) {
+    public PopupTargetBackgroundView(Context context) {
         super(context);
-        init();
+        internalInit();
     }
     
-    public PopupBackgroundView(Context context, AttributeSet attrs) {
+    public PopupTargetBackgroundView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        internalInit();
     }
     
-    public PopupBackgroundView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PopupTargetBackgroundView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        internalInit();
     }
     
     
@@ -50,7 +52,7 @@ public class PopupBackgroundView extends FrameLayout {
      * 此视图的默认background不起作用
      */
     private int popupBackgroundColor;
-    public PopupBackgroundView setPopupBackgroundColor(int popupBackgroundColor) {
+    public PopupTargetBackgroundView setPopupBackgroundColor(int popupBackgroundColor) {
         this.popupBackgroundColor = popupBackgroundColor;
         invalidate();
         return this;
@@ -63,7 +65,7 @@ public class PopupBackgroundView extends FrameLayout {
      * 边缘圆角半径
      */
     private int edgeRoundedRadius;
-    public PopupBackgroundView setEdgeRoundedRadius(int edgeRoundedRadius) {
+    public PopupTargetBackgroundView setEdgeRoundedRadius(int edgeRoundedRadius) {
         this.edgeRoundedRadius = edgeRoundedRadius;
         invalidate();
         return this;
@@ -76,9 +78,9 @@ public class PopupBackgroundView extends FrameLayout {
      * popup方向，与箭头方向相反
      */
     private PopupDirection popupDirection;
-    public PopupBackgroundView setPopupDirection(PopupDirection popupDirection) {
+    public PopupTargetBackgroundView setPopupDirection(PopupDirection popupDirection) {
         this.popupDirection = popupDirection;
-        updatePadding();
+        internalUpdatePadding();
         return this;
     }
     public PopupDirection getPopupDirection() {
@@ -92,7 +94,7 @@ public class PopupBackgroundView extends FrameLayout {
      * 三角形箭头高度
      */
     private int directionArrowHeight;
-    public PopupBackgroundView setDirectionArrowHeight(int directionArrowHeight) {
+    public PopupTargetBackgroundView setDirectionArrowHeight(int directionArrowHeight) {
         this.directionArrowHeight = directionArrowHeight;
         invalidate();
         return this;
@@ -105,9 +107,9 @@ public class PopupBackgroundView extends FrameLayout {
      * 阴影半径
      */
     private int popupShadowRadius;
-    public PopupBackgroundView setPopupShadowRadius(int popupShadowRadius) {
+    public PopupTargetBackgroundView setPopupShadowRadius(int popupShadowRadius) {
         this.popupShadowRadius = popupShadowRadius;
-        updatePadding();
+        internalUpdatePadding();
         return this;
     }
     public int getPopupShadowRadius() {
@@ -118,9 +120,9 @@ public class PopupBackgroundView extends FrameLayout {
      * 边缘内距
      */
     private Rect edgePadding;
-    public PopupBackgroundView setEdgePadding(Rect edgePadding) {
+    public PopupTargetBackgroundView setEdgePadding(Rect edgePadding) {
         this.edgePadding = edgePadding;
-        updatePadding();
+        internalUpdatePadding();
         return this;
     }
     public Rect getEdgePadding() {
@@ -128,6 +130,24 @@ public class PopupBackgroundView extends FrameLayout {
             this.edgePadding = new Rect();
         }
         return this.edgePadding;
+    }
+
+    private int windowX = WindowLocationCenter;
+    public PopupTargetBackgroundView setWindowX(int windowX) {
+        this.windowX = windowX;
+        return this;
+    }
+    public int getWindowX() {
+        return this.windowX;
+    }
+
+    private int windowY = WindowLocationCenter;
+    public PopupTargetBackgroundView setWindowY(int windowY) {
+        this.windowY = windowY;
+        return this;
+    }
+    public int getWindowY() {
+        return this.windowY;
     }
 
     /**
@@ -269,18 +289,21 @@ public class PopupBackgroundView extends FrameLayout {
     
     
     /* Private Methods */
-    private void init() {
+    private void internalInit() {
         this.directionArrowHeight = getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundArrowHeight);
         this.popupShadowRadius =  getContext().getResources().getDimensionPixelSize(R.dimen.popupBackgroundShadowRadius);
         this.popupBackgroundColor = Color.WHITE;
 
         setWillNotDraw(false);
+
+        setClipChildren(false);
+        setClipToPadding(false);
     }
 
     /**
      * 更新内距padding
      */
-    private void updatePadding() {
+    private void internalUpdatePadding() {
         int left, top, right, bottom;
         left = getEdgePadding().left + getPopupShadowRadius();
         top = getEdgePadding().top + getPopupShadowRadius();;
