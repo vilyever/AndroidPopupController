@@ -17,7 +17,7 @@ import com.vilyever.unitconversion.DimenConverter;
  * Created by vilyever on 2016/5/26.
  * Feature:
  */
-public class PopupContentFrameLayout extends FrameLayout implements View.OnAttachStateChangeListener {
+public class PopupContentFrameLayout extends FrameLayout implements View.OnAttachStateChangeListener, ViewTreeObserver.OnGlobalFocusChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
     final PopupContentFrameLayout self = this;
     
     
@@ -152,7 +152,33 @@ public class PopupContentFrameLayout extends FrameLayout implements View.OnAttac
         }
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        getViewTreeObserver().addOnGlobalFocusChangeListener(this);
+        getViewTreeObserver().addOnGlobalLayoutListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        getViewTreeObserver().removeOnGlobalFocusChangeListener(this);
+        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+    }
+
     /* Delegates */
+    @Override
+    public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+        internalUpdateLayoutForKeyboardStateChange();
+    }
+
+    @Override
+    public void onGlobalLayout() {
+        internalUpdateLayoutForKeyboardStateChange();
+    }
+
     @Override
     public void onViewAttachedToWindow(View v) {
         if (getShowPopupAnimationPerformer() != null) {
@@ -175,20 +201,6 @@ public class PopupContentFrameLayout extends FrameLayout implements View.OnAttac
 
         setClipChildren(false);
         setClipToPadding(false);
-
-        getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
-            @Override
-            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-                self.internalUpdateLayoutForKeyboardStateChange();
-            }
-        });
-
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                self.internalUpdateLayoutForKeyboardStateChange();
-            }
-        });
     }
 
     private void internalLayoutChildrenOffset() {
@@ -258,7 +270,7 @@ public class PopupContentFrameLayout extends FrameLayout implements View.OnAttac
                     int focusViewScreenX = focusViewLocation[0];
                     int focusViewScreenY = focusViewLocation[1];
 
-                    int offset = getHeight() - (focusViewScreenY + focusView.getHeight()) - DimenConverter.dpToPixel(8);
+                    int offset = getHeight() - (focusViewScreenY + focusView.getHeight()) - DimenConverter.dpToPixel(0);
 
                     getFocusingBackgroundView().setY(getFocusingBackgroundView().getY() + offset);
                 }

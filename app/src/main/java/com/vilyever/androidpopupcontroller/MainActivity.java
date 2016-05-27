@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 
 
-                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Top, true, 0, 0);
+//                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Top, true, 0, 0);
 
 //                self.popupController.popupInView(self.getWindow().getDecorView(), PopupDirection.Center);
 
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 //                getHudController().show();
+                getAddIpAccountPopupController().popupFromView(findViewById(R.id.titleLabel), PopupDirection.Center, false);
             }
         });
 
@@ -150,6 +151,14 @@ public class MainActivity extends AppCompatActivity {
             };
         }
         return this.editController;
+    }
+
+    private AddIpAccountPopupController addIpAccountPopupController;
+    protected AddIpAccountPopupController getAddIpAccountPopupController() {
+        if (this.addIpAccountPopupController == null) {
+            this.addIpAccountPopupController = new AddIpAccountPopupController(this);
+        }
+        return this.addIpAccountPopupController;
     }
 
 }

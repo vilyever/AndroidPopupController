@@ -179,12 +179,12 @@ public class PopupController extends ViewController {
                     final int y = (int) event.getRawY();
 
                     int[] popupContentViewLocation = new int[2];
-                    self.getPopupWindow().getContentView().getLocationInWindow(popupContentViewLocation);
+                    self.getPopupWindow().getContentView().getLocationOnScreen(popupContentViewLocation);
                     int popupContentViewX = popupContentViewLocation[0];
                     int popupContentViewY = popupContentViewLocation[1];
 
                     int[] showingViewLocation = new int[2];
-                    self.getPopupTargetBackgroundView().getLocationInWindow(showingViewLocation);
+                    self.getPopupTargetBackgroundView().getLocationOnScreen(showingViewLocation);
                     int showingViewX = showingViewLocation[0];
                     int showingViewY = showingViewLocation[1];
 
@@ -192,8 +192,9 @@ public class PopupController extends ViewController {
                         if ((x < popupContentViewX) || (x >= popupContentViewX + self.getPopupWindow().getContentView().getWidth())
                             || (y < popupContentViewY) || (y >= popupContentViewY + self.getPopupWindow().getContentView().getHeight())) {
                             // touch outside of the fullscreen content layout, not possible in common
+                            // FIXME: 2016/5/27 sth wrong when keyboard popup will enter here
                             if (self.isDismissOnTouchOutside()) {
-                                self.dismissPopup();
+//                                self.dismissPopup();
                             }
                             return true;
                         }
