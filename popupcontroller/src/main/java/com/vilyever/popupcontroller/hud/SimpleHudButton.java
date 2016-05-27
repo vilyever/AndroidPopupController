@@ -10,19 +10,19 @@ import android.widget.Button;
  * Created by vilyever on 2016/5/12.
  * Feature:
  */
-public class HudButton extends Button {
-    final HudButton self = this;
+public class SimpleHudButton extends Button {
+    final SimpleHudButton self = this;
 
     /* Constructors */
-    public HudButton(Context context) {
+    public SimpleHudButton(Context context) {
         super(context);
     }
 
-    public HudButton(Context context, AttributeSet attrs) {
+    public SimpleHudButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public HudButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SimpleHudButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
     
@@ -31,7 +31,7 @@ public class HudButton extends Button {
     
     /* Properties */
     private int normalTextColor;
-    public HudButton setNormalTextColor(int normalTextColor) {
+    public SimpleHudButton setNormalTextColor(int normalTextColor) {
         this.normalTextColor = normalTextColor;
         setTextColor(this.normalTextColor);
         return this;
@@ -41,7 +41,7 @@ public class HudButton extends Button {
     }
 
     private int highlightTextColor;
-    public HudButton setHighlightTextColor(int highlightTextColor) {
+    public SimpleHudButton setHighlightTextColor(int highlightTextColor) {
         this.highlightTextColor = highlightTextColor;
         return this;
     }

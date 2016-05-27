@@ -140,18 +140,23 @@ public class PopupContentFrameLayout extends FrameLayout implements View.OnAttac
                 View parent = (View) focusView.getParent();
                 while (parent != null) {
                     if (parent instanceof PopupTargetBackgroundView) {
-                        if (parent == getFocusingBackgroundView()) {
-                            return;
-                        }
+                        if (parent != getFocusingBackgroundView()) {
 
-                        if (getFocusingBackgroundView() != null) {
-                            internalLayoutChildrenOffset(getFocusingBackgroundView(), -screenY);
+                            if (getFocusingBackgroundView() != null) {
+                                internalLayoutChildrenOffset(getFocusingBackgroundView(), -screenY);
+                            }
                             setFocusingBackgroundView((PopupTargetBackgroundView) parent);
                         }
+
                         break;
                     }
 
-                    parent = (View) parent.getParent();
+                    if (parent.getParent() instanceof View) {
+                        parent = (View) parent.getParent();
+                    }
+                    else {
+                        parent = null;
+                    }
                 }
 
                 if (getFocusingBackgroundView() != null) {
@@ -165,7 +170,7 @@ public class PopupContentFrameLayout extends FrameLayout implements View.OnAttac
                     int focusViewScreenX = focusViewLocation[0];
                     int focusViewScreenY = focusViewLocation[1];
 
-                    int offset = screenY + h - (focusViewScreenY + focusView.getHeight()) - DimenConverter.dpToPixel(8);
+                    int offset = h - (focusViewScreenY + focusView.getHeight()) - DimenConverter.dpToPixel(8);
 
                     getFocusingBackgroundView().setY(getFocusingBackgroundView().getWindowY() + offset);
                 }

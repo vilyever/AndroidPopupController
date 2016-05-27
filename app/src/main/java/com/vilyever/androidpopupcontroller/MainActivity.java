@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.vilyever.popupcontroller.ViewController;
-import com.vilyever.popupcontroller.hud.HudController;
+import com.vilyever.popupcontroller.hud.SimpleHudController;
 import com.vilyever.popupcontroller.popup.PopupController;
 import com.vilyever.popupcontroller.popup.PopupDirection;
 import com.vilyever.unitconversion.DimenConverter;
@@ -124,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
         return this.titleLabel;
     }
 
-    private HudController hudController;
-    protected HudController getHudController() {
+    private SimpleHudController hudController;
+    protected SimpleHudController getHudController() {
         if (this.hudController == null) {
-            this.hudController = new HudController();
+            this.hudController = new SimpleHudController();
             hudController.setLeftButtonTitle("ok").dismissOnLeftButton();
             hudController.setRightButtonTitle("cancel").dismissOnRightButton();
             hudController.setCenterButtonTitle("haha");
