@@ -16,7 +16,6 @@ import android.widget.FrameLayout;
 
 import com.vilyever.activityhelper.ActivityHelper;
 import com.vilyever.activityhelper.ActivityStateDelegate;
-import com.vilyever.contextholder.ContextHolder;
 import com.vilyever.popupcontroller.animation.AnimationPerformer;
 import com.vilyever.popupcontroller.animation.OnAnimationStateChangeListener;
 import com.vilyever.popupcontroller.listener.OnViewLayoutChangeListener;
@@ -53,6 +52,7 @@ public class ViewController {
         View view = LayoutInflater.from(wrapperFrameLayout.getContext())
                                   .inflate(layout, wrapperFrameLayout, false);
         setView(view);
+        setContext(context);
     }
 
     public ViewController(View view) {
@@ -365,7 +365,7 @@ public class ViewController {
                 @Override
                 public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
                     if (self.getContext().equals(activity)
-                            || self.getContext().equals(ContextHolder.getContext())) {
+                            || !(self.getContext() instanceof Activity)) {
                         self.onActivityCreated(activity, savedInstanceState);
                     }
                 }
@@ -373,7 +373,7 @@ public class ViewController {
                 @Override
                 public void onActivityStarted(Activity activity) {
                     if (self.getContext().equals(activity)
-                        || self.getContext().equals(ContextHolder.getContext())) {
+                        || !(self.getContext() instanceof Activity)) {
                         self.onActivityStarted(activity);
                     }
                 }
@@ -381,7 +381,7 @@ public class ViewController {
                 @Override
                 public void onActivityResumed(Activity activity) {
                     if (self.getContext().equals(activity)
-                        || self.getContext().equals(ContextHolder.getContext())) {
+                        || !(self.getContext() instanceof Activity)) {
                         self.onActivityResumed(activity);
                     }
                 }
@@ -389,7 +389,7 @@ public class ViewController {
                 @Override
                 public void onActivityPaused(Activity activity) {
                     if (self.getContext().equals(activity)
-                        || self.getContext().equals(ContextHolder.getContext())) {
+                        || !(self.getContext() instanceof Activity)) {
                         self.onActivityPaused(activity);
                     }
                 }
@@ -397,7 +397,7 @@ public class ViewController {
                 @Override
                 public void onActivityStopped(Activity activity) {
                     if (self.getContext().equals(activity)
-                        || self.getContext().equals(ContextHolder.getContext())) {
+                        || !(self.getContext() instanceof Activity)) {
                         self.onActivityStopped(activity);
                     }
                 }
@@ -405,7 +405,7 @@ public class ViewController {
                 @Override
                 public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
                     if (self.getContext().equals(activity)
-                        || self.getContext().equals(ContextHolder.getContext())) {
+                        || !(self.getContext() instanceof Activity)) {
                         self.onActivitySaveInstanceState(activity, outState);
                     }
                 }
@@ -413,7 +413,7 @@ public class ViewController {
                 @Override
                 public void onActivityDestroyed(Activity activity) {
                     if (self.getContext().equals(activity)
-                        || self.getContext().equals(ContextHolder.getContext())) {
+                        || !(self.getContext() instanceof Activity)) {
                         self.onActivityDestroyed(activity);
                     }
                 }
