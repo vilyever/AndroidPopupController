@@ -6,23 +6,4 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-
-    <dimen name="padding_xs">5dp</dimen>
-    <dimen name="padding_s">9dp</dimen>
-    <dimen name="padding_m">15dp</dimen>
-    <dimen name="padding_l">23dp</dimen>
-    <dimen name="padding_xl">45dp</dimen>
-
-    <dimen name="text_size_button">14sp</dimen>
-    <dimen name="text_size_caption">14sp</dimen>
-    <dimen name="text_size_body_0">10sp</dimen>
-    <dimen name="text_size_body_1">12sp</dimen>
-    <dimen name="text_size_body_2">14sp</dimen>
-    <dimen name="text_size_subhead">16sp</dimen>
-    <dimen name="text_size_title">20sp</dimen>
-    <dimen name="text_size_headline">24sp</dimen>
-    <dimen name="text_size_display1">34sp</dimen>
-    <dimen name="text_size_display2">45sp</dimen>
-    <dimen name="text_size_display3">56sp</dimen>
-    <dimen name="text_size_display4">112sp</dimen>
 </resources>
