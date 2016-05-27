@@ -42,6 +42,29 @@
         android:layout_height="wrap_content"
         android:textColor="@color/White"
         android:hint="test"
+        android:maxLines="1"
+        android:inputType="text"
+        android:imeOptions="actionNext"
+        android:nextFocusForward="@+id/editText2"
+        />
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/White"
+        android:inputType="text"
+        android:hint="test"
+        android:imeOptions="actionNext"
+        android:nextFocusForward="@+id/editText3"
+        />
+
+    <EditText
+        android:id="@+id/editText3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/White"
+        android:hint="test"
         />
 
 </LinearLayout>

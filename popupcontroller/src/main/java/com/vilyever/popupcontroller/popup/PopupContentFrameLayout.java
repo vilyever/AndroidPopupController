@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.vilyever.popupcontroller.animation.AnimationPerformer;
@@ -106,6 +107,16 @@ public class PopupContentFrameLayout extends FrameLayout implements View.OnAttac
     protected PopupTargetBackgroundView getFocusingBackgroundView() {
         return this.focusingBackgroundView;
     }
+
+    private boolean keyboardShowing;
+    protected PopupContentFrameLayout setKeyboardShowing(boolean keyboardShowing) {
+        this.keyboardShowing = keyboardShowing;
+        internalUpdateLayoutForKeyboardStateChange();
+        return this;
+    }
+    protected boolean isKeyboardShowing() {
+        return this.keyboardShowing;
+    }
     
     /* Overrides */
     @Override
@@ -134,6 +145,83 @@ public class PopupContentFrameLayout extends FrameLayout implements View.OnAttac
         int expectedHeight = Resource.getDisplayMetrics().heightPixels - screenY;
 
         if (h != expectedHeight) {
+            setKeyboardShowing(true);
+        }
+        else {
+            setKeyboardShowing(false);
+        }
+    }
+
+    /* Delegates */
+    @Override
+    public void onViewAttachedToWindow(View v) {
+        if (getShowPopupAnimationPerformer() != null) {
+            getShowPopupAnimationPerformer().onAnimation(v, null);
+        }
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(View v) {
+
+    }
+    
+    /* Private Methods */
+    private void internalInit() {
+        setWillNotDraw(false);
+
+        setFocusableInTouchMode(true);
+
+        setPadding(0, 0, 0, -Resource.getDisplayMetrics().heightPixels);
+
+        setClipChildren(false);
+        setClipToPadding(false);
+
+        getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+                self.internalUpdateLayoutForKeyboardStateChange();
+            }
+        });
+
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                self.internalUpdateLayoutForKeyboardStateChange();
+            }
+        });
+    }
+
+    private void internalLayoutChildrenOffset() {
+        int[] location = new int[2];
+        getLocationOnScreen(location);
+        int screenX = location[0];
+        int screenY = location[1];
+
+        internalLayoutChildrenOffset(-screenY);
+    }
+
+    private void internalLayoutChildrenOffset(int offsetY) {
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (child instanceof PopupTargetBackgroundView && child != getFocusingBackgroundView()) {
+                PopupTargetBackgroundView v = (PopupTargetBackgroundView) child;
+                internalLayoutChildrenOffset(v, offsetY);
+            }
+        }
+    }
+
+    private void internalLayoutChildrenOffset(PopupTargetBackgroundView child, int offsetY) {
+        child.setX(child.getWindowX());
+        child.setY(child.getWindowY() + offsetY);
+    }
+
+    private void internalUpdateLayoutForKeyboardStateChange() {
+        int[] location = new int[2];
+        getLocationOnScreen(location);
+        int screenX = location[0];
+        int screenY = location[1];
+
+        if (isKeyboardShowing()) {
             View focusView = findFocus();
 
             if (focusView != null) {
@@ -170,9 +258,9 @@ public class PopupContentFrameLayout extends FrameLayout implements View.OnAttac
                     int focusViewScreenX = focusViewLocation[0];
                     int focusViewScreenY = focusViewLocation[1];
 
-                    int offset = h - (focusViewScreenY + focusView.getHeight()) - DimenConverter.dpToPixel(8);
+                    int offset = getHeight() - (focusViewScreenY + focusView.getHeight()) - DimenConverter.dpToPixel(8);
 
-                    getFocusingBackgroundView().setY(getFocusingBackgroundView().getWindowY() + offset);
+                    getFocusingBackgroundView().setY(getFocusingBackgroundView().getY() + offset);
                 }
             }
 
@@ -185,55 +273,6 @@ public class PopupContentFrameLayout extends FrameLayout implements View.OnAttac
                 internalLayoutChildrenOffset(-screenY);
             }
         }
-    }
-
-    /* Delegates */
-    @Override
-    public void onViewAttachedToWindow(View v) {
-        if (getShowPopupAnimationPerformer() != null) {
-            getShowPopupAnimationPerformer().onAnimation(v, null);
-        }
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(View v) {
-
-    }
-    
-    /* Private Methods */
-    private void internalInit() {
-        setWillNotDraw(false);
-
-        setFocusableInTouchMode(true);
-
-        setPadding(0, 0, 0, -Resource.getDisplayMetrics().heightPixels);
-
-        setClipChildren(false);
-        setClipToPadding(false);
-    }
-
-    private void internalLayoutChildrenOffset() {
-        int[] location = new int[2];
-        getLocationOnScreen(location);
-        int screenX = location[0];
-        int screenY = location[1];
-
-        internalLayoutChildrenOffset(-screenY);
-    }
-
-    private void internalLayoutChildrenOffset(int offsetY) {
-        for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            if (child instanceof PopupTargetBackgroundView && child != getFocusingBackgroundView()) {
-                PopupTargetBackgroundView v = (PopupTargetBackgroundView) child;
-                internalLayoutChildrenOffset(v, offsetY);
-            }
-        }
-    }
-
-    private void internalLayoutChildrenOffset(PopupTargetBackgroundView child, int offsetY) {
-        child.setX(child.getWindowX());
-        child.setY(child.getWindowY() + offsetY);
     }
 
     /* Interfaces */

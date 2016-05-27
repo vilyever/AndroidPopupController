@@ -1,6 +1,5 @@
 package com.vilyever.androidpopupcontroller;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -145,16 +143,9 @@ public class MainActivity extends AppCompatActivity {
                 protected void onViewWillAttachToParent(ViewGroup parent) {
                     super.onViewWillAttachToParent(parent);
 
-                    View view = this.findViewById(R.id.blueView);
-                    view.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            EditText editText = findViewById(R.id.editText);
-                            editText.clearFocus();
-                            InputMethodManager imm = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                        }
-                    });
+                    EditText editText = findViewById(R.id.editText);
+                    EditText editText2 = findViewById(R.id.editText2);
+                    EditText editText3 = findViewById(R.id.editText3);
                 }
             };
         }
