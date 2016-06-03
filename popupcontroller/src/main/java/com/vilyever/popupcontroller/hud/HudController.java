@@ -97,6 +97,22 @@ public abstract class HudController extends PopupController {
         return (T) this;
     }
 
+    public <T extends HudController> T hide() {
+        return hide(0);
+    }
+
+    public <T extends HudController> T hide(long afterMilliseconds) {
+        afterMilliseconds = Math.max(afterMilliseconds, 0);
+        if (afterMilliseconds <= 0) {
+            dismiss();
+        }
+        else {
+            getView().removeCallbacks(getHideRunnable());
+            getView().postDelayed(getHideRunnable(), afterMilliseconds);
+        }
+        return (T) this;
+    }
+
     /* Properties */
     private boolean prepareToShow;
     protected HudController setPrepareToShow(boolean prepareToShow) {
@@ -106,13 +122,25 @@ public abstract class HudController extends PopupController {
     public boolean isPrepareToShow() {
         return this.prepareToShow;
     }
-    
+
+    private Runnable hideRunnable;
+    protected Runnable getHideRunnable() {
+        if (this.hideRunnable == null) {
+            this.hideRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    self.hide();
+                }
+            };
+        }
+        return this.hideRunnable;
+    }
 
     /* Overrides */
     @Override
-    public <T extends PopupController> T dismissPopup() {
+    public <T extends PopupController> T dismiss() {
         setPrepareToShow(false);
-        return super.dismissPopup();
+        return super.dismiss();
     }
 
     @Override
@@ -123,6 +151,13 @@ public abstract class HudController extends PopupController {
             setPrepareToShow(false);
             show(activity);
         }
+    }
+
+    @Override
+    protected void onActivityDestroyed(Activity activity) {
+        super.onActivityDestroyed(activity);
+
+        dismiss();
     }
 
     /* Delegates */

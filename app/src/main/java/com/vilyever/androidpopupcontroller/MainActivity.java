@@ -126,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
     protected SimpleHudController getHudController() {
         if (this.hudController == null) {
             this.hudController = new SimpleHudController();
-            hudController.setLeftButtonTitle("ok").dismissOnLeftButton();
-            hudController.setRightButtonTitle("cancel").dismissOnRightButton();
+            hudController.setLeftButtonTitle("ok").hideOnLeftButton();
+            hudController.setRightButtonTitle("cancel").hideOnRightButton();
             hudController.setCenterButtonTitle("haha");
             hudController.setCustomView(getEditController().getView());
             this.hudController.setDismissOnBackPressed(true);

@@ -1,5 +1,6 @@
 package com.vilyever.popupcontroller.popup;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -13,12 +14,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
+import com.vilyever.activityhelper.ActivityHelper;
 import com.vilyever.popupcontroller.R;
 import com.vilyever.popupcontroller.ViewController;
 import com.vilyever.popupcontroller.animation.AnimationDirection;
 import com.vilyever.popupcontroller.animation.AnimationPerformer;
-import com.vilyever.popupcontroller.animation.DialogEnterAnimationPerformer;
-import com.vilyever.popupcontroller.animation.DialogExitAnimationPerformer;
 import com.vilyever.resource.Colour;
 import com.vilyever.resource.Resource;
 
@@ -91,15 +91,35 @@ public class PopupController extends ViewController {
 
     /**
      * 消除popupWindow
+     * @deprecated try {@link #dismiss()}
      */
+    @Deprecated
     public <T extends PopupController> T dismissPopup() {
+        return dismiss();
+    }
+
+    /**
+     * 隐藏popupWindow
+     */
+    public <T extends PopupController> T dismiss() {
         if (isShowing()) {
-            getContentFrameLayout().removePopupView(getPopupTargetBackgroundView(), new PopupContentFrameLayout.RemoveDelegate() {
-                @Override
-                public void onRemoveAnimationEnd(PopupContentFrameLayout frameLayout) {
-                    self.getPopupWindow().close();
-                }
-            });
+            boolean shouldAnimate = false;
+            if (getAnchorView() != null && getAnchorView().getContext() instanceof Activity) {
+                Activity activity = (Activity) getAnchorView().getContext();
+                Activity resumedActivity = ActivityHelper.findResumedActivity();
+                shouldAnimate = activity.equals(resumedActivity);
+            }
+            if (shouldAnimate) {
+                getContentFrameLayout().removePopupView(getPopupTargetBackgroundView(), new PopupContentFrameLayout.RemoveDelegate() {
+                    @Override
+                    public void onRemoveAnimationEnd(PopupContentFrameLayout frameLayout) {
+                        self.getPopupWindow().close();
+                    }
+                });
+            }
+            else {
+                getPopupWindow().close();
+            }
         }
 
         return (T) this;
@@ -157,6 +177,28 @@ public class PopupController extends ViewController {
         getPopupTargetBackgroundView().setEdgePadding(new Rect(left, top, right, bottom));
         return (T) this;
     }
+
+    /**
+     * 显示popup动画
+     */
+    public <T extends PopupController> T setShowPopupAnimationPerformer(AnimationPerformer showPopupAnimationPerformer) {
+        getContentFrameLayout().setShowPopupAnimationPerformer(showPopupAnimationPerformer);
+        return (T) this;
+    }
+    public AnimationPerformer getShowPopupAnimationPerformer() {
+        return getContentFrameLayout().getShowPopupAnimationPerformer();
+    }
+
+    /**
+     * 隐藏popup动画
+     */
+    public <T extends PopupController> T setDismissPopupAnimationPerformer(AnimationPerformer dismissPopupAnimationPerformer) {
+        getContentFrameLayout().setDismissPopupAnimationPerformer(dismissPopupAnimationPerformer);
+        return (T) this;
+    }
+    public AnimationPerformer getDismissPopupAnimationPerformer() {
+        return getContentFrameLayout().getDismissPopupAnimationPerformer();
+    }
     
     
     /* Properties */
@@ -203,14 +245,14 @@ public class PopupController extends ViewController {
                                 || (y < showingViewY) || (y >= showingViewY + self.getPopupTargetBackgroundView().getHeight())) {
                                 // touch outside of the showing content(include the backgroundView)
                                 if (self.isDismissOnTouchOutside()) {
-                                    self.dismissPopup();
+                                    self.dismiss();
                                 }
                             }
                         }
                     }
                     else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
                         if (self.isDismissOnTouchOutside()) {
-                            self.dismissPopup();
+                            self.dismiss();
                         }
                         return true;
                     }
@@ -227,6 +269,15 @@ public class PopupController extends ViewController {
             });
         }
         return this.popupWindow;
+    }
+
+    private View anchorView;
+    protected PopupController setAnchorView(View anchorView) {
+        this.anchorView = anchorView;
+        return this;
+    }
+    public View getAnchorView() {
+        return this.anchorView;
     }
 
     private PopupContentFrameLayout contentFrameLayout;
@@ -336,11 +387,11 @@ public class PopupController extends ViewController {
 
             AnimationPerformer showPopupAnimationPerformer = getContentFrameLayout().getShowPopupAnimationPerformer();
             AnimationPerformer dismissPopupAnimationPerformer = getContentFrameLayout().getDismissPopupAnimationPerformer();
-            if (showPopupAnimationPerformer == null) {
-                showPopupAnimationPerformer = new DialogEnterAnimationPerformer();
+            if (showPopupAnimationPerformer != null) {
+                showPopupAnimationPerformer.setAnimationDirection(AnimationDirection.values()[popupDirection.ordinal()]);
             }
-            if (dismissPopupAnimationPerformer == null) {
-                dismissPopupAnimationPerformer = new DialogExitAnimationPerformer();
+            if (dismissPopupAnimationPerformer != null) {
+                dismissPopupAnimationPerformer.setAnimationDirection(AnimationDirection.values()[popupDirection.ordinal()]);
             }
 
             switch (popupDirection) {
@@ -353,8 +404,6 @@ public class PopupController extends ViewController {
                         windowX = originX - (contentWidth / 2 - anchorView.getWidth() / 2) + offsetX;
                         windowY = originY - (contentHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     }
-                    showPopupAnimationPerformer.setAnimationDirection(AnimationDirection.Center);
-                    dismissPopupAnimationPerformer.setAnimationDirection(AnimationDirection.Center);
                     break;
                 case Left:
                     if (isInView) {
@@ -365,8 +414,6 @@ public class PopupController extends ViewController {
                         windowX = originX - contentWidth + getPopupTargetBackgroundView().getPopupShadowRadius() + offsetX;
                         windowY = originY - (contentHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     }
-                    showPopupAnimationPerformer.setAnimationDirection(AnimationDirection.Left);
-                    dismissPopupAnimationPerformer.setAnimationDirection(AnimationDirection.Left);
                     break;
                 case Top:
                     if (isInView) {
@@ -377,8 +424,6 @@ public class PopupController extends ViewController {
                         windowX = originX - (contentWidth / 2 - anchorView.getWidth() / 2) + offsetX;
                         windowY = originY - contentHeight + getPopupTargetBackgroundView().getPopupShadowRadius() + offsetY;
                     }
-                    showPopupAnimationPerformer.setAnimationDirection(AnimationDirection.Top);
-                    dismissPopupAnimationPerformer.setAnimationDirection(AnimationDirection.Top);
                     break;
                 case Right:
                     if (isInView) {
@@ -389,8 +434,6 @@ public class PopupController extends ViewController {
                         windowX = originX + anchorView.getWidth() - getPopupTargetBackgroundView().getPopupShadowRadius() + offsetX;
                         windowY = originY - (contentHeight / 2 - anchorView.getHeight() / 2) + offsetY;
                     }
-                    showPopupAnimationPerformer.setAnimationDirection(AnimationDirection.Right);
-                    dismissPopupAnimationPerformer.setAnimationDirection(AnimationDirection.Right);
                     break;
                 case Bottom:
                     if (isInView) {
@@ -401,8 +444,6 @@ public class PopupController extends ViewController {
                         windowX = originX - (contentWidth / 2 - anchorView.getWidth() / 2) + offsetX;
                         windowY = originY + anchorView.getHeight() - getPopupTargetBackgroundView().getPopupShadowRadius() + offsetY;
                     }
-                    showPopupAnimationPerformer.setAnimationDirection(AnimationDirection.Bottom);
-                    dismissPopupAnimationPerformer.setAnimationDirection(AnimationDirection.Bottom);
                     break;
                 case LeftTop:
                     if (isInView) {
@@ -413,8 +454,6 @@ public class PopupController extends ViewController {
                         windowX = originX - contentWidth + getPopupTargetBackgroundView().getPopupShadowRadius() + offsetX;
                         windowY = originY - contentHeight + getPopupTargetBackgroundView().getPopupShadowRadius() + offsetY;
                     }
-                    showPopupAnimationPerformer.setAnimationDirection(AnimationDirection.LeftTop);
-                    dismissPopupAnimationPerformer.setAnimationDirection(AnimationDirection.LeftTop);
                     break;
                 case RightTop:
                     if (isInView) {
@@ -425,8 +464,6 @@ public class PopupController extends ViewController {
                         windowX = originX + anchorView.getWidth() - getPopupTargetBackgroundView().getPopupShadowRadius() + offsetX;
                         windowY = originY - contentHeight + getPopupTargetBackgroundView().getPopupShadowRadius() + offsetY;
                     }
-                    showPopupAnimationPerformer.setAnimationDirection(AnimationDirection.RightTop);
-                    dismissPopupAnimationPerformer.setAnimationDirection(AnimationDirection.RightTop);
                     break;
                 case RightBottom:
                     if (isInView) {
@@ -437,8 +474,6 @@ public class PopupController extends ViewController {
                         windowX = originX + anchorView.getWidth() - getPopupTargetBackgroundView().getPopupShadowRadius() + offsetX;
                         windowY = originY + anchorView.getHeight() - getPopupTargetBackgroundView().getPopupShadowRadius() + offsetY;
                     }
-                    showPopupAnimationPerformer.setAnimationDirection(AnimationDirection.RightBottom);
-                    dismissPopupAnimationPerformer.setAnimationDirection(AnimationDirection.RightBottom);
                     break;
                 case LeftBottom:
                     if (isInView) {
@@ -449,8 +484,6 @@ public class PopupController extends ViewController {
                         windowX = originX - contentWidth + getPopupTargetBackgroundView().getPopupShadowRadius() + offsetX;
                         windowY = originY + anchorView.getHeight() - getPopupTargetBackgroundView().getPopupShadowRadius() + offsetY;
                     }
-                    showPopupAnimationPerformer.setAnimationDirection(AnimationDirection.LeftBottom);
-                    dismissPopupAnimationPerformer.setAnimationDirection(AnimationDirection.LeftBottom);
                     break;
             }
 
@@ -473,6 +506,7 @@ public class PopupController extends ViewController {
 
     @CallSuper
     protected void internalShowPopupWindow(View anchorView) {
+        setAnchorView(anchorView);
         if (isDimBackground()) {
             getContentFrameLayout().setBackgroundColor(Colour.changeAlpha(Color.BLACK, 130));
         }
@@ -482,6 +516,7 @@ public class PopupController extends ViewController {
     @CallSuper
     protected void internalOnPopupDismiss() {
 //        detachFromParent(false);
+        setAnchorView(null);
         getOnPopupDismissListener().onPopupWindowDismiss(this);
     }
      

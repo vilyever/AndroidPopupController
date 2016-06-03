@@ -34,83 +34,83 @@ public class SimpleHudController extends HudController {
 
     
     /* Public Methods */
-    public SimpleHudController showTitle(boolean show) {
-        getTitleLabel().setVisibility(show ? View.VISIBLE : View.GONE);
+    public SimpleHudController displayTitle(boolean display) {
+        getTitleLabel().setVisibility(display ? View.VISIBLE : View.GONE);
         return this;
     }
 
-    public SimpleHudController showCustom(boolean show) {
-        getCustomViewLayout().setVisibility(show ? View.VISIBLE : View.GONE);
+    public SimpleHudController displayCustomView(boolean display) {
+        getCustomViewLayout().setVisibility(display ? View.VISIBLE : View.GONE);
         return this;
     }
 
-    public SimpleHudController showLeftButton(boolean show) {
-        getLeftButton().setVisibility(show ? View.VISIBLE : View.GONE);
+    public SimpleHudController displayLeftButton(boolean display) {
+        getLeftButton().setVisibility(display ? View.VISIBLE : View.GONE);
         internalUpdateLayout();
         return this;
     }
 
-    public SimpleHudController showCenterButton(boolean show) {
-        getCenterButton().setVisibility(show ? View.VISIBLE : View.GONE);
+    public SimpleHudController displayCenterButton(boolean display) {
+        getCenterButton().setVisibility(display ? View.VISIBLE : View.GONE);
         internalUpdateLayout();
         return this;
     }
 
-    public SimpleHudController showRightButton(boolean show) {
-        getRightButton().setVisibility(show ? View.VISIBLE : View.GONE);
+    public SimpleHudController displayRightButton(boolean display) {
+        getRightButton().setVisibility(display ? View.VISIBLE : View.GONE);
         internalUpdateLayout();
         return this;
     }
 
     public SimpleHudController setTitle(String title) {
         getTitleLabel().setText(title);
-        showTitle(title != null);
+        displayTitle(title != null);
         return this;
     }
 
     public SimpleHudController setLeftButtonTitle(String title) {
         getLeftButton().setText(title);
-        showLeftButton(title != null);
+        displayLeftButton(title != null);
         return this;
     }
 
     public SimpleHudController setCenterButtonTitle(String title) {
         getCenterButton().setText(title);
-        showCenterButton(title != null);
+        displayCenterButton(title != null);
         return this;
     }
 
     public SimpleHudController setRightButtonTitle(String title) {
         getRightButton().setText(title);
-        showRightButton(title != null);
+        displayRightButton(title != null);
         return this;
     }
 
-    public SimpleHudController dismissOnLeftButton() {
+    public SimpleHudController hideOnLeftButton() {
         getLeftButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                self.dismissPopup();
+                self.hide();
             }
         });
         return this;
     }
 
-    public SimpleHudController dismissOnCenterButton() {
+    public SimpleHudController hideOnCenterButton() {
         getCenterButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                self.dismissPopup();
+                self.hide();
             }
         });
         return this;
     }
 
-    public SimpleHudController dismissOnRightButton() {
+    public SimpleHudController hideOnRightButton() {
         getRightButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                self.dismissPopup();
+                self.hide();
             }
         });
         return this;

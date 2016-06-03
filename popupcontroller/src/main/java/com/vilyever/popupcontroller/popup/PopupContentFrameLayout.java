@@ -79,7 +79,6 @@ public class PopupContentFrameLayout extends FrameLayout implements View.OnAttac
     private AnimationPerformer showPopupAnimationPerformer;
     public PopupContentFrameLayout setShowPopupAnimationPerformer(AnimationPerformer showPopupAnimationPerformer) {
         this.showPopupAnimationPerformer = showPopupAnimationPerformer;
-//        this.showPopupAnimationPerformer = null;
         return this;
     }
     public AnimationPerformer getShowPopupAnimationPerformer() {
@@ -92,7 +91,6 @@ public class PopupContentFrameLayout extends FrameLayout implements View.OnAttac
     private AnimationPerformer dismissPopupAnimationPerformer;
     public PopupContentFrameLayout setDismissPopupAnimationPerformer(AnimationPerformer dismissPopupAnimationPerformer) {
         this.dismissPopupAnimationPerformer = dismissPopupAnimationPerformer;
-//        this.dismissPopupAnimationPerformer = null;
         return this;
     }
     public AnimationPerformer getDismissPopupAnimationPerformer() {
