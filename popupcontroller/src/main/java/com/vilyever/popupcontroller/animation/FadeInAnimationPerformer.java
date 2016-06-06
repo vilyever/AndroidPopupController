@@ -25,80 +25,93 @@ public class FadeInAnimationPerformer extends AnimationPerformer {
     /* Overrides */
     @Override
     public void onAnimation(final View view, final OnAnimationStateChangeListener listener) {
-        view.animate().cancel();
+        onAnimationCancel(view);
 
-        view.setAlpha(0.0f);
+        int fromX = 0;
+        int fromY = 0;
 
         switch (self.getAnimationDirection()) {
             case Left:
-                view.setTranslationX(-DefaultDirectionMoveDistance);
+                fromX = -DefaultDirectionMoveDistance;
                 break;
             case Top:
-                view.setTranslationY(-DefaultDirectionMoveDistance);
+                fromY = -DefaultDirectionMoveDistance;
                 break;
             case Right:
-                view.setTranslationX(DefaultDirectionMoveDistance);
+                fromX = DefaultDirectionMoveDistance;
                 break;
             case Bottom:
-                view.setTranslationY(DefaultDirectionMoveDistance);
+                fromY = DefaultDirectionMoveDistance;
                 break;
             case LeftTop:
-                view.setTranslationX(-DefaultDirectionMoveDistance);
-                view.setTranslationY(-DefaultDirectionMoveDistance);
+                fromX = -DefaultDirectionMoveDistance;
+                fromY = -DefaultDirectionMoveDistance;
                 break;
             case RightTop:
-                view.setTranslationX(DefaultDirectionMoveDistance);
-                view.setTranslationY(-DefaultDirectionMoveDistance);
+                fromX = DefaultDirectionMoveDistance;
+                fromY = -DefaultDirectionMoveDistance;
                 break;
             case RightBottom:
-                view.setTranslationX(DefaultDirectionMoveDistance);
-                view.setTranslationY(DefaultDirectionMoveDistance);
+                fromX = DefaultDirectionMoveDistance;
+                fromY = DefaultDirectionMoveDistance;
                 break;
             case LeftBottom:
-                view.setTranslationX(-DefaultDirectionMoveDistance);
-                view.setTranslationY(DefaultDirectionMoveDistance);
+                fromX = -DefaultDirectionMoveDistance;
+                fromY = DefaultDirectionMoveDistance;
                 break;
         }
 
-        view.animate().setDuration(DefaultAnimateDuration);
-        view.animate().alpha(1.0f);
-        view.animate().translationX(0.0f).translationY(0.0f);
-        view.animate().setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                if (listener != null) {
-                    listener.onAnimationStart();
-                }
-            }
+        view.setAlpha(0.0f);
+        view.setTranslationX(fromX);
+        view.setTranslationY(fromY);
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (listener != null) {
-                    listener.onAnimationEnd();
-                }
-            }
+        view.animate().setDuration(DefaultAnimateDuration)
+                        .alpha(1.0f)
+                        .translationX(0.0f)
+                        .translationY(0.0f)
+                        .setListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                self.setAnimating(true);
+                            }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                view.setAlpha(1.0f);
-                view.setTranslationX(0.0f);
-                view.setTranslationY(0.0f);
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                self.setAnimating(false);
 
-                if (listener != null) {
-                    listener.onAnimationCancel();
-                }
-            }
+                                if (listener != null) {
+                                    listener.onAnimationEnd();
+                                    view.animate().setListener(null);
+                                }
+                            }
 
-            @Override
-            public void onAnimationRepeat(Animator animation) {
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+                                self.setAnimating(false);
 
-            }
-        });
+                                view.setAlpha(1.0f);
+                                view.setTranslationX(0.0f);
+                                view.setTranslationY(0.0f);
+
+                                if (listener != null) {
+                                    listener.onAnimationCancel();
+                                    view.animate().setListener(null);
+                                }
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+
+                            }
+                        });
     }
 
     @Override
     public void onAnimationCancel(View view) {
-        view.animate().cancel();
+        if (isAnimating()) {
+            setAnimating(false);
+            view.animate().cancel();
+        }
     }
 
     /* Delegates */

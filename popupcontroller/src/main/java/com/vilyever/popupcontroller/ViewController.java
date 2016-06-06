@@ -136,7 +136,7 @@ public class ViewController {
                 preLayoutParams = (ViewGroup.MarginLayoutParams) getView().getLayoutParams();
             }
 
-            detachFromParent();
+            detachFromParent(false);
 
             internalAttemptToChangeStateFlow(StateFlow.State.WillAttach, true, parent);
 
@@ -172,6 +172,7 @@ public class ViewController {
         }
 
         if (getAttachAnimationPerformer() != null) {
+            // FIXME: 2016/6/3 detach
             getAttachAnimationPerformer().onAnimationCancel(getView());
         }
 

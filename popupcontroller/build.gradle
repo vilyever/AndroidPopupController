@@ -26,4 +26,6 @@ dependencies {
     compile 'com.github.vilyever:AndroidActivityHelper:1.1.3'
     compile 'com.github.vilyever:AndroidResource:1.2.1'
     compile 'com.github.vilyever:AndroidUnitConversion:1.1.0'
+
+    compile 'com.github.vilyever:AndroidLogger:1.0.8'
 }

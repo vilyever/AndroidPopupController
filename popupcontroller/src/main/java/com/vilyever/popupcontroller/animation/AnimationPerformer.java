@@ -47,7 +47,15 @@ public abstract class AnimationPerformer {
         }
         return this.animationDirection;
     }
-    
+
+    private boolean animating;
+    protected AnimationPerformer setAnimating(boolean animating) {
+        this.animating = animating;
+        return this;
+    }
+    public boolean isAnimating() {
+        return this.animating;
+    }
     
     /* Overrides */
      

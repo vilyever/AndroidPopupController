@@ -10,13 +10,13 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.vilyever.popupcontroller.ViewController;
 import com.vilyever.popupcontroller.hud.SimpleHudController;
 import com.vilyever.popupcontroller.popup.PopupController;
-import com.vilyever.popupcontroller.popup.PopupDirection;
 import com.vilyever.unitconversion.DimenConverter;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +25,14 @@ public class MainActivity extends AppCompatActivity {
     private PopupController popupController;
     private PopupController popupController2;
 
+    private RedController redController;
+    protected RedController getRedController() {
+        if (this.redController == null) {
+            this.redController = new RedController(this);
+        }
+        return this.redController;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,15 +40,24 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
+            boolean b = false;
             @Override
             public void onClick(View view) {
+                if (!b) {
+                    getRedController().attachToParent(getContentLayout(), true);
+                }
+                else {
+                    getRedController().detachFromParent(true);
+                }
+                b = !b;
+
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
 
 
-                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Top, true, 0, 0);
+//                self.popupController.popupFromView(self.findViewById(R.id.titleLabel), PopupDirection.Top, true, 0, 0);
 
 //                self.popupController.popupInView(self.getWindow().getDecorView(), PopupDirection.Center);
 
@@ -151,5 +168,8 @@ public class MainActivity extends AppCompatActivity {
         }
         return this.editController;
     }
+
+    private FrameLayout contentLayout;
+    protected FrameLayout getContentLayout() { if (this.contentLayout == null) { this.contentLayout = (FrameLayout) findViewById(R.id.contentLayout); } return this.contentLayout; }
 
 }
