@@ -49,7 +49,7 @@ public class RedController extends ViewController {
     protected void onViewAppeared() {
         super.onViewAppeared();
 
-        getBlueController().attachToParent(getContentLayout());
+//        getBlueController().attachToParent(getContentLayout());
     }
 
     /* Delegates */

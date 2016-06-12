@@ -117,6 +117,7 @@ public class DialogExitAnimationPerformer extends AnimationPerformer {
 
     @Override
     public void onAnimationCancel(View view) {
+        setAnimating(false);
         view.animate().cancel();
     }
 

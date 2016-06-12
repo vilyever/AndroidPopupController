@@ -3,6 +3,8 @@ package com.vilyever.popupcontroller.animation;
 import android.animation.Animator;
 import android.view.View;
 
+import com.vilyever.logger.Logger;
+
 /**
  * FadeOutAnimationPerformer
  * AndroidPopupController <com.vilyever.popupcontroller.animation>
@@ -112,10 +114,8 @@ public class FadeOutAnimationPerformer extends AnimationPerformer {
 
     @Override
     public void onAnimationCancel(View view) {
-        if (isAnimating()) {
-            setAnimating(false);
-            view.animate().cancel();
-        }
+        setAnimating(false);
+        view.animate().cancel();
     }
 
     /* Delegates */

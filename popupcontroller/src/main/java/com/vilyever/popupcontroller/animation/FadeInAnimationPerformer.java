@@ -65,6 +65,7 @@ public class FadeInAnimationPerformer extends AnimationPerformer {
         view.setTranslationX(fromX);
         view.setTranslationY(fromY);
 
+        // animation is not start immediately
         view.animate().setDuration(DefaultAnimateDuration)
                         .alpha(1.0f)
                         .translationX(0.0f)
@@ -108,10 +109,9 @@ public class FadeInAnimationPerformer extends AnimationPerformer {
 
     @Override
     public void onAnimationCancel(View view) {
-        if (isAnimating()) {
-            setAnimating(false);
-            view.animate().cancel();
-        }
+        // cancel no started animation will not call the onAnimationCancel callback
+        setAnimating(false);
+        view.animate().cancel();
     }
 
     /* Delegates */

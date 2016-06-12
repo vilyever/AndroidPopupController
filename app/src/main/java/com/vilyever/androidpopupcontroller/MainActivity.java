@@ -45,13 +45,16 @@ public class MainActivity extends AppCompatActivity {
             boolean b = false;
             @Override
             public void onClick(View view) {
-                if (!b) {
-                    getRedController().attachToParent(getContentLayout(), true);
-                }
-                else {
-                    getRedController().detachFromParent(true);
-                }
-                b = !b;
+//                if (!b) {
+//                    getRedController().attachToParent(getContentLayout());
+//                }
+//                else {
+//                    getRedController().detachFromParent(true);
+//                }
+//                b = !b;
+
+                getRedController().detachFromParent(true);
+                getRedController().attachToParent(getContentLayout());
 
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();

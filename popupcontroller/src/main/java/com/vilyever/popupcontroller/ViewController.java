@@ -93,39 +93,24 @@ public class ViewController {
         return null;
     }
 
-    /** {@link #attachToActivity(Activity, boolean)} */
-    public <T extends ViewController> T attachToActivity(Activity activity) {
-        return attachToActivity(activity, false);
-    }
-
     /**
      * 添加当前controller的view到一个activity的根视图上
      * @param activity
      * @return
      */
-    public <T extends ViewController> T attachToActivity(Activity activity, boolean keepMargin) {
-        return attachToParent((ViewGroup) activity.getWindow().getDecorView(), keepMargin);
+    public <T extends ViewController> T attachToActivity(Activity activity) {
+        return attachToParent((ViewGroup) activity.getWindow().getDecorView());
     }
 
-    public <T extends ViewController> T attachToActivity(Activity activity, int parentLayoutID) {
-        return attachToActivity(activity, parentLayoutID, false);
+    public <T extends ViewController> T attachToParent(Activity activity, int parentLayoutID) {
+        return attachToParent((ViewGroup) activity.findViewById(parentLayoutID));
     }
-
-    public <T extends ViewController> T attachToActivity(Activity activity, int parentLayoutID, boolean keepMargin) {
-        return attachToParent((ViewGroup) activity.findViewById(parentLayoutID), keepMargin);
-    }
-
-    /** {@link #attachToParent(ViewGroup, boolean)} */
-    public <T extends ViewController> T attachToParent(ViewGroup parent) {
-        return attachToParent(parent, false);
-    }
-
+    
     /**
      * 添加当前controller的view到一个父view上
      * @param parent 父view
-     * @param keepMargin 若当前view的layoutParams有margin属性，是否保持不变
      */
-    public <T extends ViewController> T attachToParent(ViewGroup parent, boolean keepMargin) {
+    public <T extends ViewController> T attachToParent(ViewGroup parent) {
         if (getDetachAnimationPerformer() != null) {
             getDetachAnimationPerformer().onAnimationCancel(getView());
         }
@@ -142,7 +127,7 @@ public class ViewController {
 
             parent.addView(getView());
 
-            if (keepMargin) {
+            if (isKeepMargin()) {
                 if (preLayoutParams != null && getView().getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
                     ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) getView().getLayoutParams();
                     layoutParams.setMargins(preLayoutParams.leftMargin, preLayoutParams.topMargin, preLayoutParams.rightMargin, preLayoutParams.bottomMargin);
@@ -172,7 +157,6 @@ public class ViewController {
         }
 
         if (getAttachAnimationPerformer() != null) {
-            // FIXME: 2016/6/3 detach
             getAttachAnimationPerformer().onAnimationCancel(getView());
         }
 
@@ -182,31 +166,7 @@ public class ViewController {
             internalAttemptToChangeStateFlow(StateFlow.State.WillDetach, false, parent);
 
             if (animated && getDetachAnimationPerformer() != null) {
-                getDetachAnimationPerformer().onAnimation(getView(), new OnAnimationStateChangeListener() {
-                    @Override
-                    public void onAnimationStart() {
-                        self.setDisappearing(true);
-                        self.onDetachAnimationStart();
-                        self.internalAttemptToChangeStateFlow(StateFlow.State.WillDisappear, false, null);
-                    }
-
-                    @Override
-                    public void onAnimationEnd() {
-                        self.setDisappearing(false);
-                        self.onDetachAnimationEnd();
-
-                        ViewGroup parent = (ViewGroup) getView().getParent();
-                        parent.removeView(getView());
-
-                        self.internalAttemptToChangeStateFlow(StateFlow.State.Detached, false, parent);
-                    }
-
-                    @Override
-                    public void onAnimationCancel() {
-                        self.setDisappearing(false);
-                        self.onDetachAnimationCancel();
-                    }
-                });
+                getDetachAnimationPerformer().onAnimation(getView(), getOnDetachAnimationStateChangeListener());
             }
             else {
                 if (getDetachAnimationPerformer() != null) {
@@ -334,6 +294,15 @@ public class ViewController {
         }
         return this.stateFlow;
     }
+    
+    private boolean keepMargin;
+    public ViewController setKeepMargin(boolean keepMargin) {
+        this.keepMargin = keepMargin;
+        return this;
+    }
+    public boolean isKeepMargin() {
+        return this.keepMargin;
+    }
 
     /**
      * attach动画提供
@@ -456,35 +425,10 @@ public class ViewController {
                     self.internalAttemptToChangeStateFlow(StateFlow.State.WillAppear, true, (ViewGroup) self.getView().getParent());
 
                     if (self.getAttachAnimationPerformer() != null) {
-                        self.getAttachAnimationPerformer().onAnimation(self.getView(), new OnAnimationStateChangeListener() {
-                            @Override
-                            public void onAnimationStart() {
-                                self.setAppearing(true);
-                                self.onAttachAnimationStart();
-                            }
-
-                            @Override
-                            public void onAnimationEnd() {
-                                self.setAppearing(false);
-                                self.onAttachAnimationEnd();
-
-                                self.internalAttemptToChangeStateFlow(StateFlow.State.Appeared, true, (ViewGroup) self.getView().getParent());
-                            }
-
-                            @Override
-                            public void onAnimationCancel() {
-                                self.setAppearing(false);
-                                self.onAttachAnimationCancel();
-                            }
-                        });
+                        self.getAttachAnimationPerformer().onAnimation(self.getView(), self.getOnAttachAnimationStateChangeListener());
                     }
                     else {
-                        self.getView().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                self.internalAttemptToChangeStateFlow(StateFlow.State.Appeared, true, (ViewGroup) self.getView().getParent());
-                            }
-                        });
+                        self.getView().post(self.getAppearedRunnable());
                     }
                 }
 
@@ -546,13 +490,86 @@ public class ViewController {
     /**
      * 是否显示到window上过
      */
-    private boolean alreadyAppeared = false;
-    protected ViewController setAlreadyAppeared(boolean alreadyAppeared) {
-        this.alreadyAppeared = alreadyAppeared;
+    private boolean alreadyAppearedOnce = false;
+    protected ViewController setAlreadyAppearedOnce(boolean alreadyAppearedOnce) {
+        this.alreadyAppearedOnce = alreadyAppearedOnce;
         return this;
     }
-    protected boolean isAlreadyAppeared() {
-        return this.alreadyAppeared;
+    protected boolean isAlreadyAppearedOnce() {
+        return this.alreadyAppearedOnce;
+    }
+
+    private OnAnimationStateChangeListener onAttachAnimationStateChangeListener;
+    protected OnAnimationStateChangeListener getOnAttachAnimationStateChangeListener() {
+        if (this.onAttachAnimationStateChangeListener == null) {
+            this.onAttachAnimationStateChangeListener = new OnAnimationStateChangeListener() {
+                @Override
+                public void onAnimationStart() {
+                    self.setAppearing(true);
+                    self.onAttachAnimationStart();
+                }
+
+                @Override
+                public void onAnimationEnd() {
+                    self.setAppearing(false);
+                    self.onAttachAnimationEnd();
+
+                    self.internalAttemptToChangeStateFlow(StateFlow.State.Appeared, true, (ViewGroup) self.getView().getParent());
+                }
+
+                @Override
+                public void onAnimationCancel() {
+                    self.setAppearing(false);
+                    self.onAttachAnimationCancel();
+                }
+            };
+        }
+        return this.onAttachAnimationStateChangeListener;
+    }
+
+    private OnAnimationStateChangeListener onDetachAnimationStateChangeListener;
+    protected OnAnimationStateChangeListener getOnDetachAnimationStateChangeListener() {
+        if (this.onDetachAnimationStateChangeListener == null) {
+            this.onDetachAnimationStateChangeListener = new OnAnimationStateChangeListener() {
+                @Override
+                public void onAnimationStart() {
+                    self.setDisappearing(true);
+                    self.onDetachAnimationStart();
+                    self.internalAttemptToChangeStateFlow(StateFlow.State.WillDisappear, false, null);
+                }
+
+                @Override
+                public void onAnimationEnd() {
+                    self.setDisappearing(false);
+                    self.onDetachAnimationEnd();
+
+                    ViewGroup parent = (ViewGroup) getView().getParent();
+                    parent.removeView(getView());
+
+                    self.internalAttemptToChangeStateFlow(StateFlow.State.Detached, false, parent);
+                }
+
+                @Override
+                public void onAnimationCancel() {
+                    self.setDisappearing(false);
+                    self.onDetachAnimationCancel();
+                }
+            };
+        }
+        return this.onDetachAnimationStateChangeListener;
+    }
+
+    private Runnable appearedRunnable;
+    protected Runnable getAppearedRunnable() {
+        if (this.appearedRunnable == null) {
+            this.appearedRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    self.internalAttemptToChangeStateFlow(StateFlow.State.Appeared, true, (ViewGroup) self.getView().getParent());
+                }
+            };
+        }
+        return this.appearedRunnable;
     }
     
     /* Overrides */
@@ -641,8 +658,8 @@ public class ViewController {
     @CallSuper
     protected void onViewAppeared() {
 
-        if (!isAlreadyAppeared()) {
-            setAlreadyAppeared(true);
+        if (!isAlreadyAppearedOnce()) {
+            setAlreadyAppearedOnce(true);
             onViewFirstAppeared();
         }
     }

@@ -117,10 +117,8 @@ public class DialogEnterAnimationPerformer extends AnimationPerformer {
 
     @Override
     public void onAnimationCancel(View view) {
-        if (isAnimating()) {
-            setAnimating(false);
-            view.animate().cancel();
-        }
+        setAnimating(false);
+        view.animate().cancel();
     }
 
     /* Delegates */
